@@ -126,6 +126,9 @@ try {
     $constructor = $creatorType.GetConstructor([type[]]@([string], [string], $options.GetType()))
     $creator = $constructor.Invoke([object[]]@([string]$source, [string]$asar, $options.PSObject.BaseObject))
     $creator.CreatePackageWithOptions()
+    # Windows code signing can append certificate data after ASAR metadata was generated.
+    [IO.File]::AppendAllText((Join-Path $unpacked $nativeRelative), ' appended certificate fixture')
+    $nativeExpected = [IO.File]::ReadAllText((Join-Path $unpacked $nativeRelative))
     $validate = $enhancerType.GetMethod('ValidateUnpackedFiles', $privateStatic)
     $validateArguments = [object[]]@([string]$asar, [string]$unpacked)
     $validate.Invoke($null, $validateArguments) | Out-Null
@@ -138,7 +141,7 @@ try {
     Assert-Equal $rejected $true 'Empty backup rejected before patching'
     Assert-Equal (Test-Path -LiteralPath $marker) $false 'Preflight leaves no patch marker'
     Assert-Equal ((Get-FileHash -LiteralPath $asar -Algorithm SHA256).Hash) $archiveBefore 'Preflight preserves archive'
-    Assert-Equal ([IO.File]::ReadAllText((Join-Path $unpacked $nativeRelative))) 'native fixture bytes, not executable' 'Preflight preserves live support files'
+    Assert-Equal ([IO.File]::ReadAllText((Join-Path $unpacked $nativeRelative))) $nativeExpected 'Preflight preserves signed support files'
     [IO.File]::WriteAllText((Join-Path $unpacked $nativeRelative), 'short')
     $rejected = $false
     try { $validate.Invoke($null, $validateArguments) | Out-Null }

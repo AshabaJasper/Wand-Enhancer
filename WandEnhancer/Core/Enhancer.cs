@@ -289,7 +289,9 @@ namespace WandEnhancer.Core
                     throw new IOException("Invalid unpacked path in the original archive.");
 
                 var file = new FileInfo(path);
-                if (!file.Exists || file.Length != entry.Size)
+                // The vendor signs native binaries after creating the ASAR header;
+                // the certificate can make valid on-disk files larger than the recorded size.
+                if (!file.Exists || file.Length < entry.Size.Value)
                     throw new IOException(
                         $"The original support files are incomplete: {relative}. " +
                         "Repair Wand and its backup before enhancing. No changes have been applied by this check.");
