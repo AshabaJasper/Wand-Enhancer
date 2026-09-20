@@ -122,7 +122,9 @@ try {
     [IO.File]::WriteAllText((Join-Path $source 'index.js'), 'console.log("fixture");')
     $options = [Activator]::CreateInstance($assembly.GetType('AsarSharp.CreateOptions', $true))
     $options.Unpack = [regex]::new('^static[\\/]unpacked(?:[\\/]|$)')
-    $creator = [Activator]::CreateInstance($assembly.GetType('AsarSharp.AsarCreator', $true), @($source, $asar, $options))
+    $creatorType = $assembly.GetType('AsarSharp.AsarCreator', $true)
+    $constructor = $creatorType.GetConstructor([type[]]@([string], [string], $options.GetType()))
+    $creator = $constructor.Invoke([object[]]@([string]$source, [string]$asar, $options.PSObject.BaseObject))
     $creator.CreatePackageWithOptions()
     $validate = $enhancerType.GetMethod('ValidateUnpackedFiles', $privateStatic)
     $validate.Invoke($null, @($asar, $unpacked)) | Out-Null
