@@ -18,6 +18,7 @@ namespace WandEnhancer.View.Controls
         
         private DoubleAnimation OpeningAnimation;
         private DoubleAnimation ClosingAnimation;
+        private IInputElement _previousFocus;
         
         
         public bool IsOpen
@@ -31,6 +32,7 @@ namespace WandEnhancer.View.Controls
                         return;
                     
 
+                    _previousFocus = Keyboard.FocusedElement;
                     Visibility            = Visibility.Visible;
                     cancel.Focus();
                     PopupPresenter.BeginAnimation(OpacityProperty, OpeningAnimation);
@@ -64,6 +66,8 @@ namespace WandEnhancer.View.Controls
                 return;
 
             Visibility   = Visibility.Collapsed;
+            _previousFocus?.Focus();
+            _previousFocus = null;
             Closed?.Invoke();
             if (PopupContent is IDisposable disposable)
             {

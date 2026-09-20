@@ -11,7 +11,8 @@
             MouseLeftButtonDown="HidePopup"/>
     
     <Border Background="{DynamicResource Background}" d:Margin="0"
-            Margin="0 40 0 40" x:Name="PopupPresenter" Width="Auto" Height="Auto"
+            Margin="20" x:Name="PopupPresenter" Width="Auto" Height="Auto"
+            KeyboardNavigation.TabNavigation="Cycle" KeyboardNavigation.ControlTabNavigation="Cycle"
             BorderBrush="{DynamicResource Border}" BorderThickness="1" MinWidth="300"
             VerticalAlignment="Center" HorizontalAlignment="Center" CornerRadius="4" Padding="15 10 10 15">
         <Grid>
@@ -22,7 +23,8 @@
             </Grid.RowDefinitions>
             <Button BorderThickness="0" BorderBrush="Transparent"
                 Tag="{StaticResource CloseIcon}"
-                Width="25" Height="25" Padding="8" Background="Transparent"
+                Width="36" Height="36" Padding="11" Background="Transparent"
+                AutomationProperties.Name="{DynamicResource ui_close_dialog}" ToolTip="{DynamicResource ui_close_dialog}"
                 HorizontalAlignment="Right" VerticalAlignment="Top" Click="HidePopup"
                 x:Name="cancel">
                 <Button.Style>
@@ -43,8 +45,9 @@
                            VerticalAlignment="Bottom"/>
             </StackPanel>
             
-            <ContentPresenter x:Name="Presenter" Margin="0 20 0 0"
-                              Content="{Binding PopupContent}" Grid.Row="2"/>
+            <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="0 20 0 0">
+                <ContentPresenter x:Name="Presenter" Content="{Binding PopupContent}"/>
+            </ScrollViewer>
 
         </Grid>
     </Border>

@@ -1,14 +1,19 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     
     <CircleEase EasingMode="EaseInOut" x:Key="BaseAnimationFunction"/>
+    <Style x:Key="KeyboardFocus" TargetType="Control">
+        <Setter Property="Template">
+            <Setter.Value><ControlTemplate><Border Margin="-3" CornerRadius="5" BorderBrush="{DynamicResource Ring}" BorderThickness="2"/></ControlTemplate></Setter.Value>
+        </Setter>
+    </Style>
     
     <Style TargetType="{x:Type Button}">
         <Style.Resources>
             <CornerRadius x:Key="CornerRadius">3 3 3 3</CornerRadius>
         </Style.Resources>
         <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+        <Setter Property="FocusVisualStyle" Value="{StaticResource KeyboardFocus}"/>
         <Setter Property="BorderBrush" Value="{DynamicResource Border}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="Foreground" Value="{DynamicResource Foreground}"/>
@@ -21,12 +26,16 @@
                             Padding="{TemplateBinding Padding}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             Background="{TemplateBinding Background}">
-                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" RecognizesAccessKey="True"/>
                     </Border>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
         <Style.Triggers>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Opacity" Value="0.45"/>
+                <Setter Property="Cursor" Value="Arrow"/>
+            </Trigger>
             <Trigger Property="IsMouseOver" Value="True">
                 <Setter Property="Background" Value="{DynamicResource Secondary}"/>
             </Trigger>
@@ -42,7 +51,6 @@
                 <Setter Property="Foreground" Value="{DynamicResource MutedForeground}"/>
             </Trigger>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Margin" Value="0 2 0 2"/>
                 <Setter Property="Background" Value="{DynamicResource Primary}"/>
             </Trigger>
         </Style.Triggers>
@@ -158,7 +166,7 @@
      <Style TargetType="CheckBox">
         <Setter Property="Cursor" Value="Hand"></Setter>   
         <Setter Property="Content" Value=""/>
-        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+        <Setter Property="FocusVisualStyle" Value="{StaticResource KeyboardFocus}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type CheckBox}">
@@ -245,7 +253,7 @@
 
 <Style TargetType="{x:Type ComboBox}">
     <Setter Property="Background" Value="Transparent"/>
-    <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+    <Setter Property="FocusVisualStyle" Value="{StaticResource KeyboardFocus}"/>
     <Setter Property="BorderBrush" Value="{DynamicResource Border}"/>
     <Setter Property="BorderThickness" Value="1"/>
     <Setter Property="Foreground" Value="{DynamicResource Foreground}"/>
@@ -328,7 +336,7 @@
 
     <Style TargetType="{x:Type ComboBoxItem}">
         <Setter Property="SnapsToDevicePixels" Value="True"/>
-        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+        <Setter Property="FocusVisualStyle" Value="{StaticResource KeyboardFocus}"/>
         <Setter Property="Foreground" Value="{DynamicResource Foreground}"/>
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="Padding" Value="8 5"/>

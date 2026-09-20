@@ -1,249 +1,95 @@
-﻿<Window x:Class="WandEnhancer.View.MainWindow.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:WandEnhancer.View.MainWindow"
-        xmlns:controls="clr-namespace:WandEnhancer.View.Controls"
-        mc:Ignorable="d"
-        d:DataContext="{d:DesignInstance local:MainWindowVm}"
-        Title="WandEnhancer"
-        Height="510" MaxHeight="510"
-        Width="780" MaxWidth="780" 
-        Opacity="0.97"
-        Background="Transparent"
-        WindowStyle="None"
-        FontFamily="{StaticResource Inter}"
-        AllowsTransparency="True">
-    <Border CornerRadius="7" Background="{DynamicResource Background}"
-            BorderBrush="{DynamicResource Border}"
-            BorderThickness="1" Margin="10">
-        <Border.Effect>
-            <DropShadowEffect BlurRadius="15" Direction="-90"
-                              RenderingBias="Quality" ShadowDepth="2"/>
-        </Border.Effect>
-                
-        <Grid>
-            <Grid Background="Transparent" VerticalAlignment="Top"
-                  MouseLeftButtonDown="OnDragMove" Height="55">
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="25 0 0 0">
-                    <Viewbox VerticalAlignment="Center" Width="32" Height="32">
-                        <Path 
-                            Fill="White" Data="{StaticResource Logo}"/>
-                    </Viewbox>
-                    <TextBlock Foreground="{DynamicResource Foreground}"
-                               FontWeight="SemiBold" Opacity="0.9"
-                               VerticalAlignment="Center"
-                               FontSize="18" Margin="10 0 0 0">
-                        <Bold>
-                            WandEnhancer 
-                        </Bold>
-                    </TextBlock>
-                    <TextBlock x:Name="VersionLabel" VerticalAlignment="Bottom"
-                               Opacity="0.7" FontSize="10" Margin="5 0 0 5"
-                               Foreground="{DynamicResource Foreground}">
-                        v 1.0.0
-                    </TextBlock>
-
-                    <Button Margin="10 0 0 0" Padding="8 2"
-                            VerticalAlignment="Center" FontSize="10.5" FontWeight="SemiBold"
-                            Background="{DynamicResource Primary}"
-                            Foreground="{DynamicResource PrimaryForeground}"
-                            BorderThickness="0" Cursor="Hand"
-                            Content="{DynamicResource mw_update_badge}"
-                            Command="{Binding ShowUpdateCommand}"
-                            ToolTip="{DynamicResource up_popup_title}">
-                        <Button.Style>
-                            <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
-                                <!-- Collapsed by default so offline builds never show the badge. -->
-                                <Setter Property="Visibility" Value="Collapsed" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding IsUpdateAvailable}" Value="True">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                        <Button.Resources>
-                            <CornerRadius x:Key="CornerRadius">4 4 4 4</CornerRadius>
-                        </Button.Resources>
-                    </Button>
-
-                </StackPanel>
-                                
-                <StackPanel  HorizontalAlignment="Right" Orientation="Horizontal">
-                    <Button
-                        Margin="0 0 5 0"
-                        Width="25" Height="25" Padding="5.5"
-                        Style="{StaticResource IconButton}"
-                        Tag="{StaticResource CogIcon}"
-                        Command="{Binding OpenSettingsCommand}"
-                        />
-                    <Button
-                        Margin="9 0 15 0"
-                        Tag="{StaticResource CloseIcon}"
-                        Width="25" Height="25" Padding="6.5"
-                        HorizontalAlignment="Right"
-                        Click="OnClosing"
-                        VerticalAlignment="Center">
-                        <Button.Resources>
-                            <CornerRadius x:Key="CornerRadius">5 5 5 5</CornerRadius>
-                        </Button.Resources>
-                        <Button.Style>
-                            <Style BasedOn="{StaticResource IconButton}" TargetType="Button">
-                                <Style.Triggers>
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter Property="Background" Value="{DynamicResource Secondary}"/>
-                                        <Setter Property="Foreground" Value="{DynamicResource Destructive}"/>
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                    </Button>
-                </StackPanel>
-
-                <Border Background="{DynamicResource Border}" Height="1" VerticalAlignment="Bottom"></Border>
-                                
-            </Grid>
-            <Grid Margin="0 55 0 0">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition/>
-                    <RowDefinition Height="50"/>
-                </Grid.RowDefinitions>
-                
-                <Grid Margin="10" Cursor="Hand" Background="Transparent">
-                    <TextBox Style="{StaticResource TitledTextBox}"
-                             IsReadOnly="True"
-                             Text="{Binding WeModInfo.RootDirectory, Mode=OneWay}"
-                             VerticalAlignment="Center">
-                    </TextBox>
-                    <Grid.InputBindings>
-                        <MouseBinding Gesture="LeftClick" Command="{Binding SetFolderPathCommand}" />
-                    </Grid.InputBindings>
-                </Grid>
-
-                    
-                    <Border Grid.Row="1" BorderBrush="{DynamicResource Border}" BorderThickness="1"
-                            Margin="10 0 10 10"
-                            CornerRadius="5">
-                        <Grid>
-                            <ListBox ItemsSource="{Binding LogList}" SelectionMode="Single"
-                                 BorderBrush="Transparent" BorderThickness="0"
-                                 Background="Transparent" 
-                                 x:Name="LogList"
-                                 Padding="6"
-                                 ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                 ScrollViewer.CanContentScroll="False">
-                            <ListBox.ItemContainerStyle>
-                                                    <Style TargetType="ListBoxItem">
-                        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-                        <Setter Property="Margin" Value="0 0 0 5"/>
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="ListBoxItem">
-                                    <Border x:Name="Card" HorizontalAlignment="Left"
-                                            Background="#08fc81"
-                                            BorderBrush="{DynamicResource Border}"
-                                            Padding="5 3 5 3" CornerRadius="3">
-                                        <TextBox Text="{Binding Message}" 
-                                                 Cursor="IBeam" FontSize="13"
-                                                 Background="Transparent" TextWrapping="Wrap"
-                                                 BorderThickness="0"
-                                                 IsReadOnly="True"/>
-                                    </Border>
-                                    <ControlTemplate.Triggers>
-                                        <DataTrigger Binding="{Binding LogType}" Value="Error">
-                                            <Setter  TargetName="Card" Property="Background" Value="#f04343"></Setter>
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding LogType}" Value="Info">
-                                            <Setter  TargetName="Card" Property="Background" Value="#FFF"></Setter>
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding LogType}" Value="Warn">
-                                            <Setter  TargetName="Card" Property="Background" Value="#facc15"></Setter>
-                                        </DataTrigger>
-                                    </ControlTemplate.Triggers>
-
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                            </ListBox.ItemContainerStyle>
-                        </ListBox>
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top"
-                                        Margin="0 4 4 0">
-                                <Button Width="22" Height="22" Padding="4"
-                                        Style="{StaticResource IconButton}"
-                                        Tag="{StaticResource CopyIcon}"
-                                        ToolTip="{DynamicResource mw_copy_logs}"
-                                        Command="{Binding CopyLogsCommand}"/>
-                                <Button Width="22" Height="22" Padding="4" Margin="4 0 0 0"
-                                        Style="{StaticResource IconButton}"
-                                        Tag="{StaticResource ExportIcon}"
-                                        ToolTip="{DynamicResource mw_export_logs}"
-                                        Command="{Binding ExportLogsCommand}"/>
-                            </StackPanel>
-                        </Grid>
-                    </Border>
-                
-
-                <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Grid.Row="2" Margin="10 0 10 10">
-                    <Grid>
-                        <Grid HorizontalAlignment="Right" >
-                            <Grid.Style>
-                                <Style TargetType="{x:Type Grid}">
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsPatchEnabled}" Value="False">
-                                            <Setter Property="Cursor" Value="No"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Grid.Style>
-                            <Button Style="{StaticResource ColoredButton}"
-                                    IsEnabled="{Binding IsPatchEnabled}"
-                                    FontWeight="Bold" FontSize="16" Width="200" 
-                                    Command="{Binding ApplyPatchCommand}"
-                                    Content="{DynamicResource mw_patch}"/>
-                        </Grid>
-                        <Button HorizontalAlignment="Right"
-                                Command="{Binding RestoreBackupCommand}"
-                                FontWeight="Bold" FontSize="16" Width="200"
-                                Style="{StaticResource ColoredButton}"
-                                IsEnabled="{Binding IsIdle}"
-                                Visibility="{Binding CanRestore, Converter={StaticResource ToVisibilityConverter}}"
-                                Content="{DynamicResource mw_restore}"/>
-                    </Grid>
-                </StackPanel>
-
-
-                
-                <DockPanel Grid.Row="2" Margin="10 0 10 10">
-                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" 
-                                Cursor="Hand" 
-                                HorizontalAlignment="Left"
-                                MouseDown="OpenSourceClicked" 
-                                Background="Transparent">
-                        <Viewbox VerticalAlignment="Center" Width="32" Height="32">
-                            <Path 
-                                Fill="White" Data="{StaticResource GitHub}"/>
-                        </Viewbox>
-                        <Grid>
-                            <TextBlock Margin="8 0 0 0"  FontSize="10" Foreground="{DynamicResource AccentForeground}">
-                                <Hyperlink Foreground="{DynamicResource AccentForeground}"><Run Text="{DynamicResource mw_source_code}"/></Hyperlink>
-                                <LineBreak/>
-                                <Run Text="{DynamicResource mw_made_by}"/>
-                                
-                                
-                                <LineBreak/>
-                                <Run Foreground="{DynamicResource MutedForeground}" Text="{DynamicResource mw_star_hint}"/>
-                            </TextBlock>
-                        </Grid>
-                    </StackPanel>
-                </DockPanel>
-            </Grid>
-            
-            <controls:PopupHost x:Name="PopupHost"/>
-        </Grid>
-    </Border>
+<Window x:Class="WandEnhancer.View.MainWindow.MainWindow"
+ xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+ xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+ xmlns:controls="clr-namespace:WandEnhancer.View.Controls"
+ Title="Wand Enhancer" Width="980" Height="740" MinWidth="640" MinHeight="560"
+ WindowStartupLocation="CenterScreen" ResizeMode="CanResize"
+ Background="{DynamicResource Background}" Foreground="{DynamicResource Foreground}"
+ FontFamily="Segoe UI" FontSize="14" UseLayoutRounding="True" Closing="OnWindowClosing">
+ <Grid>
+  <Grid Margin="24">
+   <Grid.Style><Style TargetType="Grid"><Style.Triggers>
+    <DataTrigger Binding="{Binding Visibility, ElementName=PopupHost}" Value="Visible"><Setter Property="IsEnabled" Value="False"/></DataTrigger>
+   </Style.Triggers></Style></Grid.Style>
+   <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+   <Grid Margin="0 0 0 22">
+    <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+    <StackPanel>
+     <StackPanel Orientation="Horizontal">
+      <Viewbox Width="28" Height="28" Margin="0 0 12 0" AutomationProperties.Name="Wand Enhancer logo"><Path Fill="{DynamicResource Foreground}" Data="{StaticResource Logo}"/></Viewbox>
+      <TextBlock Text="Wand Enhancer" FontSize="25" FontWeight="SemiBold"/>
+      <Border Background="{DynamicResource Secondary}" CornerRadius="5" Padding="7 3" Margin="12 0 0 0" VerticalAlignment="Center"><TextBlock x:Name="VersionLabel" Text="2.1.0.0" FontSize="11" Foreground="{DynamicResource MutedForeground}"/></Border>
+     </StackPanel>
+     <TextBlock Margin="0 8 16 0" Text="{DynamicResource ui_subtitle}" TextWrapping="Wrap" Foreground="{DynamicResource MutedForeground}"/>
+    </StackPanel>
+    <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Top" IsEnabled="{Binding IsIdle}">
+     <Button Content="{DynamicResource mw_update_badge}" Command="{Binding ShowUpdateCommand}" Margin="0 0 8 0" Padding="12 8">
+      <Button.Style><Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding IsUpdateAvailable}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></Button.Style>
+     </Button>
+     <Button Width="40" Height="40" Padding="11" Style="{StaticResource IconButton}" Tag="{StaticResource CogIcon}" Command="{Binding OpenSettingsCommand}" ToolTip="{DynamicResource settings_title}" AutomationProperties.Name="{DynamicResource settings_title}"/>
+    </StackPanel>
+   </Grid>
+   <Border Grid.Row="1" Padding="18" Margin="0 0 0 18" CornerRadius="10" Background="{DynamicResource Muted}" BorderBrush="{DynamicResource Border}" BorderThickness="1">
+    <StackPanel>
+     <TextBlock Foreground="{DynamicResource MutedForeground}" FontSize="11" FontWeight="SemiBold" Text="{DynamicResource ui_installation}"/>
+     <TextBlock Margin="0 7 0 0" FontSize="20" FontWeight="SemiBold" AutomationProperties.LiveSetting="Polite">
+      <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Text" Value="{DynamicResource ui_ready}"/><Style.Triggers>
+       <DataTrigger Binding="{Binding WeModInfo}" Value="{x:Null}"><Setter Property="Text" Value="{DynamicResource ui_missing}"/></DataTrigger>
+       <DataTrigger Binding="{Binding AlreadyPatched}" Value="True"><Setter Property="Text" Value="{DynamicResource ui_applied}"/></DataTrigger>
+       <DataTrigger Binding="{Binding IsBusy}" Value="True"><Setter Property="Text" Value="{DynamicResource ui_working}"/></DataTrigger>
+      </Style.Triggers></Style></TextBlock.Style>
+     </TextBlock>
+     <Grid Margin="0 14 0 0" IsEnabled="{Binding IsIdle}">
+      <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+      <TextBox Text="{Binding WeModInfo.RootDirectory, Mode=OneWay}" IsReadOnly="True" AutomationProperties.Name="{DynamicResource mw_folder_path}" Background="{DynamicResource Background}" Foreground="{DynamicResource Foreground}" BorderBrush="{DynamicResource Border}" Padding="10 8" FontSize="12" VerticalContentAlignment="Center" Margin="0 0 10 0"/>
+      <Button Grid.Column="1" Content="{DynamicResource ui_browse}" Padding="16 8" Command="{Binding SetFolderPathCommand}"/>
+     </Grid>
+     <StackPanel Margin="0 12 0 0" Visibility="{Binding IsBusy, Converter={StaticResource ToVisibilityConverter}}">
+      <ProgressBar Height="4" IsIndeterminate="{Binding IsBusy}" AutomationProperties.Name="{DynamicResource ui_working}"/>
+      <TextBlock Margin="0 8 0 0" Text="{DynamicResource ui_wait}" Foreground="{DynamicResource MutedForeground}" TextWrapping="Wrap"/>
+     </StackPanel>
+    </StackPanel>
+   </Border>
+   <Border Grid.Row="2" CornerRadius="10" BorderBrush="{DynamicResource Border}" BorderThickness="1" Background="{DynamicResource Background}">
+    <Grid>
+     <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition/></Grid.RowDefinitions>
+     <Grid Margin="16 12">
+      <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+      <StackPanel VerticalAlignment="Center"><TextBlock Text="{DynamicResource ui_activity}" FontWeight="SemiBold"/><TextBlock Margin="0 3 0 0" FontSize="12" Foreground="{DynamicResource MutedForeground}" Text="{DynamicResource ui_activity_hint}"/></StackPanel>
+      <StackPanel Grid.Column="1" Orientation="Horizontal">
+       <Button Width="36" Height="36" Padding="9" Style="{StaticResource IconButton}" Tag="{StaticResource CopyIcon}" ToolTip="{DynamicResource mw_copy_logs}" AutomationProperties.Name="{DynamicResource mw_copy_logs}" Command="{Binding CopyLogsCommand}"/>
+       <Button Width="36" Height="36" Padding="9" Margin="8 0 0 0" Style="{StaticResource IconButton}" Tag="{StaticResource ExportIcon}" ToolTip="{DynamicResource mw_export_logs}" AutomationProperties.Name="{DynamicResource mw_export_logs}" Command="{Binding ExportLogsCommand}"/>
+      </StackPanel>
+     </Grid>
+     <ListBox Grid.Row="1" x:Name="LogList" ItemsSource="{Binding LogList}" Background="Transparent" BorderThickness="0" Padding="10 0 10 10" AutomationProperties.Name="{DynamicResource ui_activity}" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Disabled" HorizontalContentAlignment="Stretch">
+      <ListBox.ItemContainerStyle><Style TargetType="ListBoxItem"><Setter Property="HorizontalContentAlignment" Value="Stretch"/><Setter Property="Margin" Value="0 3"/><Setter Property="Template"><Setter.Value>
+       <ControlTemplate TargetType="ListBoxItem">
+        <Border x:Name="Card" Background="{DynamicResource Muted}" BorderBrush="{DynamicResource Border}" BorderThickness="3 0 0 0" CornerRadius="4" Padding="9 7">
+         <TextBox x:Name="Message" Text="{Binding Message}" IsReadOnly="True" TextWrapping="Wrap" FontFamily="Consolas" FontSize="12" Background="Transparent" Foreground="{DynamicResource Foreground}" BorderThickness="0" Padding="0"/>
+        </Border>
+        <ControlTemplate.Triggers>
+         <DataTrigger Binding="{Binding LogType}" Value="Success"><Setter TargetName="Card" Property="BorderBrush" Value="#6EE7B7"/></DataTrigger>
+         <DataTrigger Binding="{Binding LogType}" Value="Warn"><Setter TargetName="Card" Property="BorderBrush" Value="#FCD34D"/></DataTrigger>
+         <DataTrigger Binding="{Binding LogType}" Value="Error"><Setter TargetName="Card" Property="BorderBrush" Value="#FDA4AF"/><Setter TargetName="Message" Property="Foreground" Value="#FDA4AF"/></DataTrigger>
+         <Trigger Property="IsKeyboardFocusWithin" Value="True"><Setter TargetName="Card" Property="Background" Value="{DynamicResource Secondary}"/></Trigger>
+        </ControlTemplate.Triggers>
+       </ControlTemplate>
+      </Setter.Value></Setter></Style></ListBox.ItemContainerStyle>
+     </ListBox>
+    </Grid>
+   </Border>
+   <StackPanel Grid.Row="3" Margin="0 18 0 0">
+    <Grid IsEnabled="{Binding IsIdle}">
+     <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+     <Button Content="{DynamicResource mw_source_code}" Click="OpenSourceClicked" HorizontalAlignment="Left" Padding="10 8" Foreground="{DynamicResource MutedForeground}" BorderThickness="0"/>
+     <StackPanel Grid.Column="1" Orientation="Horizontal">
+      <Button Content="{DynamicResource mw_restore}" Command="{Binding RestoreBackupCommand}" IsEnabled="{Binding CanRestore}" ToolTip="{DynamicResource ui_restore_hint}" Padding="18 10" MinWidth="110" Margin="0 0 10 0"/>
+      <Button Content="{DynamicResource ui_choose}" Command="{Binding ApplyPatchCommand}" IsEnabled="{Binding IsPatchEnabled}" Style="{StaticResource ColoredButton}" Padding="20 10" MinWidth="170" FontWeight="SemiBold"/>
+     </StackPanel>
+    </Grid>
+    <TextBlock Margin="0 12 0 0" Text="{DynamicResource ui_review_hint}" FontSize="12" TextWrapping="Wrap" Foreground="{DynamicResource MutedForeground}"/>
+   </StackPanel>
+  </Grid>
+  <controls:PopupHost x:Name="PopupHost"/>
+ </Grid>
 </Window>

@@ -7,6 +7,21 @@
     <!--#endregion -->
 
     <!--#region MainWindow -->
+    <s:String x:Key="ui_subtitle">Choose your changes. Keep a clear way back.</s:String>
+    <s:String x:Key="ui_installation">WAND INSTALLATION</s:String>
+    <s:String x:Key="ui_ready">Ready to configure</s:String>
+    <s:String x:Key="ui_missing">Choose your Wand installation</s:String>
+    <s:String x:Key="ui_applied">Changes applied</s:String>
+    <s:String x:Key="ui_working">Working on your installation…</s:String>
+    <s:String x:Key="ui_wait">Please wait for the operation to finish. Details appear below.</s:String>
+    <s:String x:Key="ui_browse">Browse…</s:String>
+    <s:String x:Key="ui_activity">Activity</s:String>
+    <s:String x:Key="ui_activity_hint">Progress, warnings and results in one place.</s:String>
+    <s:String x:Key="ui_choose">Choose changes…</s:String>
+    <s:String x:Key="ui_restore_hint">Restore the original files when a backup is available.</s:String>
+    <s:String x:Key="ui_review_hint">Review your options before applying. Restore becomes available when a backup exists.</s:String>
+    <s:String x:Key="ui_close_dialog">Close dialog</s:String>
+    <s:String x:Key="ui_apply_selected">Apply selected changes</s:String>
     <s:String x:Key="mw_folder_path">Folder path</s:String>
     <s:String x:Key="mw_folder_not_found">Folder not found</s:String>
     <s:String x:Key="mw_patch">Enhance</s:String>

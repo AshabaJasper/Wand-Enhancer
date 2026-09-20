@@ -19,6 +19,9 @@ namespace WandEnhancer.View.MainWindow
             this.ViewModel = new MainWindowVm(this, new WindowsFileDialogs());
             this.DataContext = ViewModel;
             VersionLabel.Text = Constants.Version.ToString();
+            // Keep the first launch usable on scaled laptop displays.
+            Width = Math.Min(Width, SystemParameters.WorkArea.Width);
+            Height = Math.Min(Height, SystemParameters.WorkArea.Height);
             Instance = this;
         }
 
@@ -49,7 +52,13 @@ namespace WandEnhancer.View.MainWindow
             PopupHost.IsOpen = false;
         }
 
-        private void OpenSourceClicked(object sender, MouseButtonEventArgs e)
+        private void OnWindowClosing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            // Do not interrupt an in-progress write or restore from the native title bar.
+            e.Cancel = ViewModel != null && ViewModel.IsBusy;
+        }
+
+        private void OpenSourceClicked(object sender, RoutedEventArgs e)
         {
             // Try to open link, do not crash if it fails.
             try
