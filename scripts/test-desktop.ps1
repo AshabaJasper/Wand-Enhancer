@@ -127,7 +127,8 @@ try {
     $creator = $constructor.Invoke([object[]]@([string]$source, [string]$asar, $options.PSObject.BaseObject))
     $creator.CreatePackageWithOptions()
     $validate = $enhancerType.GetMethod('ValidateUnpackedFiles', $privateStatic)
-    $validate.Invoke($null, @($asar, $unpacked)) | Out-Null
+    $validateArguments = [object[]]@([string]$asar, [string]$unpacked)
+    $validate.Invoke($null, $validateArguments) | Out-Null
     [IO.File]::Copy($asar, $backup)
     [IO.Directory]::CreateDirectory($unpackedBackup) | Out-Null
     $archiveBefore = (Get-FileHash -LiteralPath $asar -Algorithm SHA256).Hash
@@ -140,7 +141,7 @@ try {
     Assert-Equal ([IO.File]::ReadAllText((Join-Path $unpacked $nativeRelative))) 'native fixture bytes, not executable' 'Preflight preserves live support files'
     [IO.File]::WriteAllText((Join-Path $unpacked $nativeRelative), 'short')
     $rejected = $false
-    try { $validate.Invoke($null, @($asar, $unpacked)) | Out-Null }
+    try { $validate.Invoke($null, $validateArguments) | Out-Null }
     catch { $rejected = $_.Exception.GetBaseException().Message.Contains('support files are incomplete') }
     Assert-Equal $rejected $true 'Truncated support file rejected'
     Write-Host 'Desktop regression checks passed (native sizes, backups, rollback, retry state, restore, empty backup and truncated support files).'
