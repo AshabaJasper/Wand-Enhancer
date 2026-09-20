@@ -112,7 +112,36 @@ try {
     }
     Assert-Equal ([IO.File]::ReadAllText((Join-Path $scratch 'FixtureClient.exe'))) 'original launcher' 'Restore launcher'
     Assert-Equal ($isPatched.Invoke($null, $installArgument)) $false 'Restored installation'
-    Write-Host 'Desktop regression checks passed (native sizes, backups, rollback, retry state, restore).'
+    # Reproduce an interrupted cleanup: backup directory exists but its native files are gone.
+    # Use an actual ASAR header and harmless text fixtures; never use a live Wand installation.
+    $source = Join-Path $scratch 'pack-source'
+    $nativeRelative = 'static/unpacked/native.dll'
+    $nativeSource = Join-Path $source $nativeRelative
+    [IO.Directory]::CreateDirectory([IO.Path]::GetDirectoryName($nativeSource)) | Out-Null
+    [IO.File]::WriteAllText($nativeSource, 'native fixture bytes, not executable')
+    [IO.File]::WriteAllText((Join-Path $source 'index.js'), 'console.log("fixture");')
+    $options = [Activator]::CreateInstance($assembly.GetType('AsarSharp.CreateOptions', $true))
+    $options.Unpack = [regex]::new('^static[\\/]unpacked(?:[\\/]|$)')
+    $creator = [Activator]::CreateInstance($assembly.GetType('AsarSharp.AsarCreator', $true), @($source, $asar, $options))
+    $creator.CreatePackageWithOptions()
+    $validate = $enhancerType.GetMethod('ValidateUnpackedFiles', $privateStatic)
+    $validate.Invoke($null, @($asar, $unpacked)) | Out-Null
+    [IO.File]::Copy($asar, $backup)
+    [IO.Directory]::CreateDirectory($unpackedBackup) | Out-Null
+    $archiveBefore = (Get-FileHash -LiteralPath $asar -Algorithm SHA256).Hash
+    $rejected = $false
+    try { $enhancerType.GetMethod('Patch').Invoke($enhancer, $null) | Out-Null }
+    catch { $rejected = $_.Exception.GetBaseException().Message.Contains('support files are incomplete') }
+    Assert-Equal $rejected $true 'Empty backup rejected before patching'
+    Assert-Equal (Test-Path -LiteralPath $marker) $false 'Preflight leaves no patch marker'
+    Assert-Equal ((Get-FileHash -LiteralPath $asar -Algorithm SHA256).Hash) $archiveBefore 'Preflight preserves archive'
+    Assert-Equal ([IO.File]::ReadAllText((Join-Path $unpacked $nativeRelative))) 'native fixture bytes, not executable' 'Preflight preserves live support files'
+    [IO.File]::WriteAllText((Join-Path $unpacked $nativeRelative), 'short')
+    $rejected = $false
+    try { $validate.Invoke($null, @($asar, $unpacked)) | Out-Null }
+    catch { $rejected = $_.Exception.GetBaseException().Message.Contains('support files are incomplete') }
+    Assert-Equal $rejected $true 'Truncated support file rejected'
+    Write-Host 'Desktop regression checks passed (native sizes, backups, rollback, retry state, restore, empty backup and truncated support files).'
 }
 finally {
     Remove-Item -LiteralPath $scratch -Recurse -Force

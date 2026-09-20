@@ -103,6 +103,11 @@ namespace WandEnhancer.Core
 
         public void Patch()
         {
+            // A directory left behind by an interrupted restore is not a usable backup.
+            // Check the selected source before stopping Wand, replacing files or writing a marker.
+            ValidateUnpackedFiles(
+                File.Exists(_backupPath) ? _backupPath : _asarPath,
+                Directory.Exists(_unpackedBackupPath) ? _unpackedBackupPath : _unpackedPath);
             ProcessTerminator.TryKillProcess(_weModConfig.BrandName);
             string markerPath = Path.Combine(Path.GetDirectoryName(_asarPath), IncompletePatchMarkerFileName);
             File.WriteAllText(markerPath, string.Empty);
@@ -256,6 +261,8 @@ namespace WandEnhancer.Core
         {
             try
             {
+                // Extraction must not silently discard native files that the pristine archive needs.
+                ValidateUnpackedFiles(_backupPath, _unpackedPath);
                 new AsarCreator(_unpackedPath, _asarPath, new CreateOptions
                 {
                     Unpack = new Regex(@"^static\\unpacked.*$")
@@ -264,6 +271,28 @@ namespace WandEnhancer.Core
             catch (Exception e)
             {
                 throw new Exception($"[ENHANCER] Failed to pack app.asar: {e.Message}", e);
+            }
+        }
+
+        private static void ValidateUnpackedFiles(string archivePath, string directory)
+        {
+            var filesystem = AsarSharp.AsarFileSystem.Disk.ReadFilesystemSync(archivePath);
+            foreach (string entryPath in filesystem.ListFiles())
+            {
+                string relative = entryPath.TrimStart('/', '\\');
+                var entry = filesystem.GetFile(relative, followLinks: false);
+                if (!entry.IsFile || entry.IsLink || entry.Unpacked != true)
+                    continue;
+
+                string path = Path.GetFullPath(Path.Combine(directory, relative));
+                if (!AsarSharp.Utils.Extensions.IsPathInside(directory, path))
+                    throw new IOException("Invalid unpacked path in the original archive.");
+
+                var file = new FileInfo(path);
+                if (!file.Exists || file.Length != entry.Size)
+                    throw new IOException(
+                        $"The original support files are incomplete: {relative}. " +
+                        "Repair Wand and its backup before enhancing. No changes have been applied by this check.");
             }
         }
 
