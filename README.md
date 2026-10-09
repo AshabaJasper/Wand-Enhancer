@@ -10,6 +10,12 @@
 
 <h4>An open-source interoperability tool designed to extend local client-side configurations and improve the UX of the Wand application.</h4>
 
+## This fork: Wand 12.62.0 support
+
+**Verified with Wand 12.62.0 stable on Windows on 9 October 2026.** This fork includes the desktop usability improvements and support-file backup validation fixes. The Static patch method successfully applied the selected enhancements, Wand opened its normal library, and the Remote Web Panel connected and displayed the installed games.
+
+The tested executable is personal build [`126f885`](https://github.com/AshabaJasper/Wand-Enhancer/commit/126f885fc24ad27830850ec0924cfddbcc131ea1), version 2.1.0.0. This compatibility update documents that existing build; it does not introduce a new executable version. In-game trainer compatibility is separate and was not retested. See [compatibility evidence and limits](docs/wand-12.62.0-compatibility.md).
+
 **🚨 IMPORTANT NOTICE: THIS PROJECT HAS NO OFFICIAL YOUTUBE TUTORIALS, GUIDES, OR PREBUILT EXECUTABLE DOWNLOADS. 🚨
 There are no official videos showing how to install or use this tool. Scammers are creating fake tutorials using this project's name and placing malware/password stealers in the video descriptions. Official GitHub releases contain release notes only, not `.exe` files. If you downloaded an `.exe` or archive from a YouTube link, a random website, or a third-party mirror, you did not get it from this project. We are not responsible for third-party downloads.**
 
