@@ -1,0 +1,28 @@
+name: Build Phone Helper
+on:
+  workflow_dispatch:
+  push:
+    branches: ['helpers/phone-setup']
+    paths: ['PhoneHelper/**', '.github/workflows/phone-helper.yml', 'web-panel/protocol/web-contract.json']
+jobs:
+  build:
+    runs-on: windows-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v5
+      - name: Build helper only
+        shell: pwsh
+        run: ./PhoneHelper/build.ps1
+      - uses: actions/upload-artifact@v6
+        with:
+          name: WandPhoneHelper-1.0.0
+          path: |
+            PhoneHelper/bin/WandPhoneHelper-Setup.exe
+            PhoneHelper/bin/WandPhoneHelper.exe
+            PhoneHelper/bin/QRCoder.dll
+            PhoneHelper/bin/QRCoder-LICENSE.txt
+            PhoneHelper/bin/build-info.json
+            PhoneHelper/bin/installer-info.json
+            PhoneHelper/bin/README.md
+          if-no-files-found: error

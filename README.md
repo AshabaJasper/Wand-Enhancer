@@ -8,6 +8,12 @@ A Windows companion for Wand, with a phone-friendly remote panel. This is [Ashab
 
 ## Get your build
 
+### Phone connection and video-guide companion
+
+The separate [Wand Phone Helper](PhoneHelper/README.md) provides the actual LAN address, an offline QR code, copy/open controls, a local-only firewall repair and public gameplay video search. Its per-user installer packages only these helper tools. It does not rebuild or embed the patcher. The Phone setup button is added to the desktop source; the currently installed Enhancer 2.1.2 executable remains unchanged.
+
+Build the helper using PhoneHelper/build.ps1, or use the **Build Phone Helper** workflow on the **helpers/phone-setup** branch. The helper's own version is 1.0.0.0. Its manifest records the exact source revision and file hash.
+
 1. Open [Actions → Build executable](https://github.com/AshabaJasper/Wand-Enhancer/actions/workflows/build.yml). To build independently, fork this repository first.
 2. Choose **Run workflow**, select **master**, and leave release checks off for the default offline patcher.
 3. Open the successful run and download **WandEnhancer-unsigned** under Artifacts. GitHub requires sign-in to download artifacts.

@@ -26,6 +26,7 @@
      <Button Content="{DynamicResource mw_update_badge}" Command="{Binding ShowUpdateCommand}" Margin="0 0 8 0" Padding="12 8">
       <Button.Style><Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding IsUpdateAvailable}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></Button.Style>
      </Button>
+     <Button Content="Phone setup" Click="OpenPhoneSetupClicked" Height="44" Padding="12 8" Margin="0 0 8 0" ToolTip="Open the phone link, QR code and local-only firewall helper"/>
      <Button Width="40" Height="40" Padding="11" Style="{StaticResource IconButton}" Tag="{StaticResource CogIcon}" Command="{Binding OpenSettingsCommand}" ToolTip="{DynamicResource settings_title}" AutomationProperties.Name="{DynamicResource settings_title}"/>
     </StackPanel>
    </Grid>

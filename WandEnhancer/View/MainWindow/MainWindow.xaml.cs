@@ -58,6 +58,30 @@ namespace WandEnhancer.View.MainWindow
             e.Cancel = ViewModel != null && ViewModel.IsBusy;
         }
 
+        private void OpenPhoneSetupClicked(object sender, RoutedEventArgs e)
+        {
+            string helper = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "WandPhoneHelper.exe");
+            if (!System.IO.File.Exists(helper))
+                helper = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                    "Programs", "WandPhoneHelper", "WandPhoneHelper.exe");
+            if (!System.IO.File.Exists(helper))
+            {
+                MessageBox.Show("Install Wand Phone Helper from this fork's PhoneHelper build first, then try again.",
+                    "Phone setup", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+            try
+            {
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(helper)
+                    { UseShellExecute = true });
+            }
+            catch (Exception error)
+            {
+                MessageBox.Show("Phone Helper could not open: " + error.Message, "Phone setup",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
         private void OpenSourceClicked(object sender, RoutedEventArgs e)
         {
             // Try to open link, do not crash if it fails.
