@@ -10,6 +10,7 @@ import {
     setAccentColor,
 } from '@/appearance/appearance-storage';
 import type { LibraryGame } from '@/library/model/games';
+import { InstallCard } from '@/pwa/InstallCard';
 import { EConnectionStatus } from '@/remote-session/remote-session.reducer';
 import { cn } from '@/shared/lib/ui';
 import { Icon } from '@/shared/ui/Icon';
@@ -77,6 +78,7 @@ export const SettingsDrawer = ({
                 />
                 {lastError ? <ErrorPanel message={lastError} /> : null}
 
+                <InstallCard />
                 <SectionHeader title={_(msg`Session`)} />
                 <SessionPanel currentGame={currentGame} currentTrainer={currentTrainer} />
 

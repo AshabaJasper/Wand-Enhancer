@@ -11,6 +11,11 @@ const distDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..',
 const REQUIRED_FILES = [
     'bridge.cjs',
     'index.html',
+    'sw.js',
+    'manifest.webmanifest',
+    'icons/icon-192.png',
+    'icons/icon-512.png',
+    'icons/apple-touch-icon.png',
     path.join('renderer-scripts', 'remote-popup-cleanup.js'),
 ];
 

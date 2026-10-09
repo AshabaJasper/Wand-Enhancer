@@ -5,6 +5,7 @@ import { createRoot } from 'react-dom/client';
 
 import { applySavedAccentColor } from '@/appearance/appearance-storage';
 
+import { startPwa } from '@/pwa/pwa';
 import { App } from './app';
 import { activateLocale, detectInitialLocale } from './i18n';
 import '../index.css';
@@ -16,6 +17,7 @@ if (!root) {
 }
 
 applySavedAccentColor();
+startPwa();
 
 function render() {
     createRoot(root!).render(

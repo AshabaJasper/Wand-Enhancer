@@ -3,6 +3,15 @@
 This file is the source of truth for release notes.
 The newest entry must match the version in `WandEnhancer/Properties/AssemblyInfo.cs`.
 
+## [2.1.2.0] - 2026-10-09
+
+### Phone installation
+
+- Add a scoped PWA manifest, maskable 192/512 icons and an Apple touch icon.
+- Add phone installation guidance, secure-address detection and a browser install button when available.
+- Cache only the static interface for offline recovery; never cache API responses, commands or game state.
+- Keep service-worker updates waiting until tabs close or the user explicitly reloads.
+- Serve manifest and PNG assets with the correct MIME types. Private HTTPS setup remains separate.
 ## [2.1.1.0] - 2026-10-09
 
 ### Personal fork update

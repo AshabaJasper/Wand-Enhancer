@@ -4,7 +4,7 @@
 
 A Windows companion for Wand, with a phone-friendly remote panel. This is [AshabaJasper's fork](https://github.com/AshabaJasper/Wand-Enhancer) of [k1tbyte/Wand-Enhancer](https://github.com/k1tbyte/Wand-Enhancer).
 
-**Enhancer 2.1.1.0 · Wand 12.62.0 stable compatibility.** The previous build was verified on this Wand version with the normal library and five games syncing to the remote panel. This update adds safer support-file replacement and a mobile-first interface. [Compatibility evidence and test limits](docs/wand-12.62.0-compatibility.md).
+**Enhancer 2.1.2.0 · Wand 12.62.0 stable compatibility.** The previous build was verified on this Wand version with the normal library and five games syncing to the remote panel. This edition adds safer support-file replacement, a mobile-first interface, and PWA support. [Compatibility evidence and test limits](docs/wand-12.62.0-compatibility.md).
 
 ## Get your build
 
@@ -35,6 +35,22 @@ For RDR2, load Story Mode before attempting a trainer. A connected library is **
 
 The remote panel uses HTTP/WebSockets and has no pairing authentication. Anyone who can reach its port can control the active trainer. Keep it on a trusted LAN/private VPN; do not forward port 3223 to the internet. The panel does not expose your Wand bearer token or installation path through its protocol.
 
+## Install on your phone (PWA)
+
+PWA support is included in **2.1.2.0**. Open **Settings → Keep Wand on your home screen** for installation status and instructions.
+
+**A trusted HTTPS address is required on a phone.** The current plain-HTTP LAN address remains a browser controller; private HTTPS setup has deliberately been left for later. The localhost exception applies only on the PC itself. No public tunnel, certificate bypass or network exposure is configured by this build.
+
+Once private HTTPS is available:
+
+1. Open that HTTPS `/remote/` address on your phone while Wand is running.
+2. **Android:** tap **Install Wand Remote** if offered, or use the browser menu → **Install app / Add to Home screen**.
+3. **iPhone:** open in Safari, use **Share → Add to Home Screen**, and enable **Open as Web App** if offered.
+4. Launch **Wand Remote** from the home screen. Keep the PC on and reachable over the same trusted network/private VPN.
+
+The service worker caches only the interface, icons and language files. It does **not** cache trainer state, API responses, commands, account data or external game artwork. Offline, the interface opens with connection recovery guidance; it cannot operate a game. New interface versions wait until existing tabs close or you choose **Reload updated panel** in Settings. Refreshing the page also checks for a new worker.
+
+See [MDN's installation requirements](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/Guides/Making_PWAs_installable). Phone installation and private HTTPS are not claimed as tested here.
 ## After Wand updates
 
 ![Recovery flow: rescan, check support files, reapply, then verify both libraries](docs/images/update-recovery.svg)

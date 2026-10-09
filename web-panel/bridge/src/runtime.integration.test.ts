@@ -1,8 +1,32 @@
 import { connect, createServer } from 'node:net';
+import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { WebSocket as NodeWebSocket } from 'ws';
 
 describe('production bridge runtime', () => {
+    it('serves phone installation assets with browser-recognized MIME types', async () => {
+        const bridge = require('../../dist/bridge.cjs');
+        const port = await getFreePort();
+        const runtime = bridge.createBridgeRuntime({
+            host: '127.0.0.1',
+            port,
+            maxPort: port,
+            panelRoot: path.resolve('public'),
+        });
+        try {
+            await waitUntil(() => runtime.listening);
+            const manifest = await fetch(`http://127.0.0.1:${port}/remote/manifest.webmanifest`);
+            expect(manifest.status).toBe(200);
+            expect(manifest.headers.get('content-type')).toContain('application/manifest+json');
+            expect(await manifest.json()).toMatchObject({ display: 'standalone' });
+            const icon = await fetch(`http://127.0.0.1:${port}/remote/icons/icon-192.png`);
+            expect(icon.status).toBe(200);
+            expect(icon.headers.get('content-type')).toBe('image/png');
+        } finally {
+            runtime.close();
+        }
+    });
+
     it('preserves the public API and sends cached snapshots after hello', async () => {
         const bridge = require('../../dist/bridge.cjs');
         expect(Object.keys(bridge).sort()).toEqual([

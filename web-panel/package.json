@@ -7,7 +7,7 @@
     "scripts": {
         "dev": "vite",
         "dev:host": "vite --host 0.0.0.0",
-        "build": "pnpm run i18n:extract && lingui compile --strict && pnpm run typecheck && vite build && pnpm run build:bridge && pnpm run verify:dist",
+        "build": "pnpm run i18n:extract && lingui compile --strict && pnpm run typecheck && vite build && node ./scripts/build-pwa.mjs && pnpm run build:bridge && pnpm run verify:dist",
         "build:bridge": "node ./bridge/build.mjs",
         "verify:dist": "node ./scripts/verify-dist.mjs",
         "lint": "biome check .",

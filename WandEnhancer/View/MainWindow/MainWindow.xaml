@@ -18,7 +18,7 @@
      <StackPanel Orientation="Horizontal">
       <Viewbox Width="28" Height="28" Margin="0 0 12 0" AutomationProperties.Name="Wand Enhancer logo"><Path Fill="{DynamicResource Foreground}" Data="{StaticResource Logo}"/></Viewbox>
       <TextBlock Text="Wand Enhancer" FontSize="25" FontWeight="SemiBold"/>
-      <Border Background="{DynamicResource Secondary}" CornerRadius="5" Padding="7 3" Margin="12 0 0 0" VerticalAlignment="Center"><TextBlock x:Name="VersionLabel" Text="2.1.1.0" FontSize="11" Foreground="{DynamicResource MutedForeground}"/></Border>
+      <Border Background="{DynamicResource Secondary}" CornerRadius="5" Padding="7 3" Margin="12 0 0 0" VerticalAlignment="Center"><TextBlock x:Name="VersionLabel" Text="2.1.2.0" FontSize="11" Foreground="{DynamicResource MutedForeground}"/></Border>
      </StackPanel>
      <TextBlock Margin="0 8 16 0" Text="{DynamicResource ui_subtitle}" TextWrapping="Wrap" Foreground="{DynamicResource MutedForeground}"/>
     </StackPanel>

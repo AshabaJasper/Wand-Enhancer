@@ -31,6 +31,10 @@ msgstr "{cheatCount} mods"
 msgid "{cheatCount} mods · {enabledCount}/{toggleCount} on"
 msgstr "{cheatCount} mods · {enabledCount}/{toggleCount} on"
 
+#: src/pwa/InstallCard.tsx
+msgid "A panel update is ready. Reload when you are done using the controls."
+msgstr "A panel update is ready. Reload when you are done using the controls."
+
 #: src/app/ui/SettingsDrawer.tsx
 msgid "Accent Color"
 msgstr "Accent Color"
@@ -54,6 +58,10 @@ msgstr "All Games"
 #: src/app/ui/SettingsDrawer.tsx
 msgid "Amber"
 msgstr "Amber"
+
+#: src/pwa/InstallCard.tsx
+msgid "Android: use Install below, or your browser menu → Install app. iPhone: open in Safari, then Share → Add to Home Screen."
+msgstr "Android: use Install below, or your browser menu → Install app. iPhone: open in Safari, then Share → Add to Home Screen."
 
 #: src/trainer/controls/ActionButton.tsx
 msgid "Apply"
@@ -191,6 +199,14 @@ msgstr "Game library"
 #~ msgid "Idle · no game"
 #~ msgstr "Idle · no game"
 
+#: src/pwa/InstallCard.tsx
+msgid "Install Wand Remote"
+msgstr "Install Wand Remote"
+
+#: src/pwa/InstallCard.tsx
+msgid "Installation setup did not finish. Check your connection and reload this page to retry."
+msgstr "Installation setup did not finish. Check your connection and reload this page to retry."
+
 #: src/trainer/ui/category-labels.ts
 msgid "Inventory"
 msgstr "Inventory"
@@ -198,6 +214,10 @@ msgstr "Inventory"
 #: src/trainer/ui/category-labels.ts
 msgid "Items"
 msgstr "Items"
+
+#: src/pwa/InstallCard.tsx
+msgid "Keep Wand on your home screen"
+msgstr "Keep Wand on your home screen"
 
 #: src/app/ui/SessionPlaceholder.tsx
 msgid "Keep Wand open on your PC and use the same Wi-Fi. After a Wand update, reapply Enhancer on the PC, then reconnect here."
@@ -273,6 +293,10 @@ msgstr "Offline"
 #~ msgid "OFFLINE"
 #~ msgstr "OFFLINE"
 
+#: src/pwa/InstallCard.tsx
+msgid "Offline interface ready."
+msgstr "Offline interface ready."
+
 #: src/app/ui/SessionPlaceholder.tsx
 msgid "Open Settings"
 msgstr "Open Settings"
@@ -296,6 +320,10 @@ msgstr "PC connection address"
 #: src/app/ui/FloatingDock.tsx
 msgid "PC offline"
 msgstr "PC offline"
+
+#: src/pwa/InstallCard.tsx
+msgid "Phone installation needs a private HTTPS address. This HTTP address still works in your browser. HTTPS setup is a separate step."
+msgstr "Phone installation needs a private HTTPS address. This HTTP address still works in your browser. HTTPS setup is a separate step."
 
 #: src/trainer/ui/category-labels.ts
 msgid "Physics"
@@ -325,6 +353,10 @@ msgstr "Preset name"
 #: src/app/ui/StatusPill.tsx
 msgid "Reconnecting"
 msgstr "Reconnecting"
+
+#: src/pwa/InstallCard.tsx
+msgid "Reload updated panel"
+msgstr "Reload updated panel"
 
 #: src/app/ui/FloatingDock.tsx
 msgid "Remote navigation"
@@ -399,10 +431,18 @@ msgstr "Vehicles"
 msgid "Violet"
 msgstr "Violet"
 
+#: src/pwa/InstallCard.tsx
+msgid "Wand and your PC must stay on for game controls. Offline mode opens the interface only; it cannot control a disconnected game."
+msgstr "Wand and your PC must stay on for game controls. Offline mode opens the interface only; it cannot control a disconnected game."
+
 #. placeholder {0}: WEB_CONTRACT.defaultRemotePort
 #: src/app/ui/SettingsDrawer.tsx
 msgid "wand remote · port {0}"
 msgstr "wand remote · port {0}"
+
+#: src/pwa/InstallCard.tsx
+msgid "Wand Remote is installed."
+msgstr "Wand Remote is installed."
 
 #: src/trainer/ui/category-labels.ts
 msgid "Weapons"
