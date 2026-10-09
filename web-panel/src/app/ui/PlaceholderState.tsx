@@ -10,15 +10,15 @@ type PlaceholderStateProps = {
 
 export const PlaceholderState = ({ icon, title, sub, action, onAction }: PlaceholderStateProps) => {
     return (
-        <div className="flex min-h-145 flex-col items-center justify-center px-10 py-12 text-center">
-            <div className="mb-4 flex size-18 items-center justify-center rounded-[18px] border border-white/10 bg-white/5 text-(--deck-accent) shadow-[0_0_0_8px_color-mix(in_oklab,var(--deck-accent)_6%,transparent),0_0_40px_-8px_color-mix(in_oklab,var(--deck-accent)_30%,transparent)] backdrop-blur-xl">
+        <div className="mx-auto flex min-h-[min(58dvh,440px)] max-w-lg flex-col items-center justify-center px-4 py-8 text-center sm:py-14">
+            <div className="mb-5 flex size-16 items-center justify-center rounded-2xl bg-white/5 text-(--deck-accent)">
                 <Icon className="size-7" name={icon} stroke={1.6} />
             </div>
-            <h2 className="text-lg font-bold text-(--deck-fg)">{title}</h2>
-            <p className="mt-1.5 max-w-65 text-[13px] leading-6 text-(--deck-fg-3)">{sub}</p>
+            <h2 className="text-2xl font-semibold text-(--deck-fg)">{title}</h2>
+            <p className="mt-3 max-w-80 text-base leading-7 text-(--deck-fg-2)">{sub}</p>
             <button
                 type="button"
-                className="mt-5 inline-flex items-center gap-2 rounded-[10px] bg-(--deck-accent) px-4 py-2.5 text-[13px] font-bold text-black shadow-[0_8px_24px_-8px_var(--deck-accent)]"
+                className="mt-6 inline-flex min-h-12 w-full max-w-72 items-center justify-center gap-3 rounded-xl bg-(--deck-accent) px-5 py-3 text-base font-semibold text-black"
                 onClick={onAction}
             >
                 {action}

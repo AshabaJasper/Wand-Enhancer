@@ -18,7 +18,7 @@ export const TopBar = ({ status, currentGame, runningTrainer, onOpenSettings }: 
     const { _ } = useLingui();
 
     return (
-        <header className="remote-glass-header sticky top-0 z-20 border-b px-3.5 pb-2.5 pt-3">
+        <header className="remote-glass-header sticky top-0 z-20 border-b px-4 pb-3 pt-[max(12px,env(safe-area-inset-top))] sm:px-6">
             <div className="flex items-center gap-2.5">
                 <IconButton
                     size="lg"
@@ -28,12 +28,14 @@ export const TopBar = ({ status, currentGame, runningTrainer, onOpenSettings }: 
                     onClick={onOpenSettings}
                 />
                 <div className="min-w-0 flex-1">
-                    <div className="font-mono text-[9.5px] font-bold tracking-[0.16em] text-(--deck-fg-4)">
-                        WAND · REMOTE DECK
-                    </div>
+                    <h1 className="text-base font-semibold text-(--deck-fg)">Wand Remote</h1>
                     <div className="mt-0.5 flex min-w-0 items-center gap-1.5">
                         <span className="min-w-0 truncate text-sm font-semibold text-(--deck-fg)">
-                            {currentGame ? currentGame.title : <Trans>Idle · no game</Trans>}
+                            {currentGame ? (
+                                currentGame.title
+                            ) : (
+                                <Trans>Choose a game to begin</Trans>
+                            )}
                         </span>
                         {currentGame && runningTrainer?.gameVersion ? (
                             <span className="shrink-0 rounded-[4px] bg-[color-mix(in_oklab,var(--deck-accent)_12%,transparent)] px-1.5 py-0.5 font-mono text-[9.5px] font-bold tracking-[0.06em] text-(--deck-accent)">

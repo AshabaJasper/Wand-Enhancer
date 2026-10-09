@@ -6,11 +6,11 @@ import { cn } from '@/shared/lib/ui';
 import { Icon } from '@/shared/ui/Icon';
 
 const STATUS_LABELS: Record<EConnectionStatus, MessageDescriptor> = {
-    [EConnectionStatus.Connected]: msg`LIVE`,
-    [EConnectionStatus.Connecting]: msg`LINKING`,
-    [EConnectionStatus.Reconnecting]: msg`LINKING`,
-    [EConnectionStatus.Error]: msg`OFFLINE`,
-    [EConnectionStatus.Idle]: msg`OFFLINE`,
+    [EConnectionStatus.Connected]: msg`Connected`,
+    [EConnectionStatus.Connecting]: msg`Connecting`,
+    [EConnectionStatus.Reconnecting]: msg`Reconnecting`,
+    [EConnectionStatus.Error]: msg`Offline`,
+    [EConnectionStatus.Idle]: msg`Offline`,
 };
 
 const STATUS_CLASSES: Record<EConnectionStatus, string> = {
@@ -31,8 +31,9 @@ export const StatusPill = ({ status }: { status: EConnectionStatus }) => {
 
     return (
         <div
+            role="status"
             className={cn(
-                'inline-flex items-center gap-1.5 rounded-full border bg-white/4 px-2.5 py-1 font-mono text-[9.5px] font-bold tracking-[0.12em] backdrop-blur-md',
+                'inline-flex shrink-0 items-center gap-1.5 rounded-full border bg-white/4 px-2.5 py-1.5 text-xs font-semibold',
                 STATUS_CLASSES[status],
             )}
         >

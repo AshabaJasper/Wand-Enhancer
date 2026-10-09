@@ -40,11 +40,24 @@ jobs:
             ./build.ps1 -Configuration Release
           }
 
+      - name: Record artifact identity
+        shell: pwsh
+        run: |
+          $exe = 'WandEnhancer/bin/Release/WandEnhancer.exe'
+          @{
+            sourceCommit = '${{ github.sha }}'
+            version = (Get-Item $exe).VersionInfo.FileVersion
+            sha256 = (Get-FileHash $exe -Algorithm SHA256).Hash
+            buildUrl = 'https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}'
+          } | ConvertTo-Json | Set-Content 'WandEnhancer/bin/Release/build-info.json' -Encoding utf8
+
       - name: Upload unsigned executable
         uses: actions/upload-artifact@v6
         with:
           name: WandEnhancer-unsigned
-          path: WandEnhancer/bin/Release/WandEnhancer.exe
+          path: |
+            WandEnhancer/bin/Release/WandEnhancer.exe
+            WandEnhancer/bin/Release/build-info.json
           if-no-files-found: error
 
       # The published artifact is always the offline build; this only proves the

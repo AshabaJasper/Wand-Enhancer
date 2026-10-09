@@ -19,7 +19,7 @@ export const SearchInput = ({ value, placeholder, className, onChange }: SearchI
     return (
         <div
             className={cn(
-                'remote-glass-control flex h-9.5 items-center gap-2 rounded-[10px] border px-2.5',
+                'remote-glass-control flex h-12 items-center gap-2 rounded-[10px] border px-2.5',
                 className,
             )}
         >
@@ -29,14 +29,14 @@ export const SearchInput = ({ value, placeholder, className, onChange }: SearchI
                 placeholder={placeholder}
                 aria-label={placeholder}
                 spellCheck={false}
-                className="min-w-0 flex-1 bg-transparent text-[13px] text-(--deck-fg) outline-none placeholder:text-(--deck-fg-4)"
+                className="min-w-0 flex-1 bg-transparent text-base text-(--deck-fg) outline-none placeholder:text-(--deck-fg-4)"
                 onInput={handleInput}
             />
             {value ? (
                 <button
                     type="button"
                     aria-label={_(msg`Clear search`)}
-                    className="flex size-6 items-center justify-center rounded-[7px] text-(--deck-fg-3) hover:bg-white/6 hover:text-(--deck-fg)"
+                    className="flex size-11 items-center justify-center rounded-[7px] text-(--deck-fg-3) hover:bg-white/6 hover:text-(--deck-fg)"
                     onClick={handleClear}
                 >
                     <Icon className="size-3.5" name="x" />

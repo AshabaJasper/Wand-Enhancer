@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="310" viewBox="0 0 1000 310" role="img" aria-labelledby="title desc">
+<title id="title">Wand Enhancer: from PC to phone</title><desc id="desc">Build your executable, check and apply on PC, open Wand, then connect the phone on the same Wi-Fi.</desc>
+<rect width="1000" height="310" rx="24" fill="#10131a"/>
+<g font-family="Segoe UI,Arial,sans-serif"><text x="36" y="55" fill="#ddf86c" font-size="16" letter-spacing="2">WAND ENHANCER / QUICK START</text><text x="36" y="98" fill="#f5f7fa" font-size="30" font-weight="700">Your PC runs Wand. Your phone is the remote.</text>
+<g fill="#1d2330" stroke="#394254"><rect x="36" y="133" width="215" height="133" rx="14"/><rect x="273" y="133" width="215" height="133" rx="14"/><rect x="510" y="133" width="215" height="133" rx="14"/><rect x="747" y="133" width="215" height="133" rx="14"/></g>
+<g fill="#ddf86c" font-size="14"><text x="55" y="164">01 / GET THE BUILD</text><text x="292" y="164">02 / APPLY ON PC</text><text x="529" y="164">03 / CHECK WAND</text><text x="766" y="164">04 / CONNECT PHONE</text></g>
+<g fill="#fff" font-size="21" font-weight="600"><text x="55" y="203">GitHub Actions</text><text x="292" y="203">Rescan &amp; apply</text><text x="529" y="203">Open your library</text><text x="766" y="203">Same Wi-Fi</text></g>
+<g fill="#b8c1d1" font-size="15"><text x="55" y="237">Keep the build manifest</text><text x="292" y="237">Close games first</text><text x="529" y="237">Keep the PC app open</text><text x="766" y="237">Scan QR → tap Library</text></g></g></svg>

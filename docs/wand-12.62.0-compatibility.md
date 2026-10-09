@@ -37,3 +37,16 @@ trainer exit remains unresolved; this is not a claim of RDR2 gameplay compatibil
 For an incomplete installation, verify both the original archive and its support-file
 backup before retrying. Never treat an empty backup directory as a valid backup.
 Build this fork from source using its GitHub Actions workflow as described in the README.
+
+## 2.1.1 recovery and mobile update
+
+The 2.1.1 source adds staged support-file replacement, an operation lock, installation
+health/rescan UI and a mobile-first remote panel. Automated fixtures cover locked
+files, a blocked swap destination, interrupted directory rename recovery and concurrent
+operation rejection. Browser checks cover 320, 375, 768, 1024 and 1440 pixels, library
+search and disconnect/reconnect against the live Wand 12.62.0 bridge.
+
+Use the artifact's `build-info.json` to identify the exact source and executable.
+The 2.1.0 live evidence above is historical, not an assertion that every 2.1.1 build
+has been installed or that a future vendor update has been simulated. Installation
+verification for a delivered executable is recorded alongside that executable.

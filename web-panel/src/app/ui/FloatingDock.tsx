@@ -1,9 +1,7 @@
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
 import { EConnectionStatus } from '@/remote-session/remote-session.reducer';
-
-import { cn } from '@/shared/lib/ui';
-import { Icon, type IconName } from '@/shared/ui/Icon';
+import { Icon } from '@/shared/ui/Icon';
 
 type FloatingDockProps = {
     status: EConnectionStatus;
@@ -15,73 +13,41 @@ type FloatingDockProps = {
     onOpenLibrary: () => void;
 };
 
+// Keep primary navigation reachable while scrolling and above phone safe areas.
 export const FloatingDock = ({
     status,
     runningGameTitle,
-    hidden,
-    leftHasBadge,
-    rightHasBadge,
     onOpenSettings,
     onOpenLibrary,
 }: FloatingDockProps) => {
     const { _ } = useLingui();
-    const live = status === EConnectionStatus.Connected;
-
+    const connected = status === EConnectionStatus.Connected;
     return (
-        <div
-            className={cn(
-                'absolute bottom-4.5 left-1/2 z-10 flex -translate-x-1/2 items-center gap-1 rounded-full border border-white/10 bg-[#0e1016]/80 p-1.5 shadow-[0_12px_40px_-10px_rgba(0,0,0,.65),inset_0_1px_0_rgba(255,255,255,.05)] backdrop-blur-2xl transition duration-300',
-                hidden ? 'translate-y-20 opacity-0' : 'translate-y-0 opacity-100',
-            )}
+        <nav
+            aria-label={_(msg`Remote navigation`)}
+            className="absolute inset-x-0 bottom-0 z-20 border-t border-white/10 bg-[#10131a] px-3 pt-2 pb-[max(10px,env(safe-area-inset-bottom))]"
         >
-            <DockButton
-                badge={leftHasBadge}
-                icon="settings"
-                label={_(msg`Settings`)}
-                onClick={onOpenSettings}
-            />
-            <div className="flex h-9.5 items-center gap-2 border-x border-white/10 px-3">
-                <span
-                    className={cn(
-                        'size-1.5 rounded-full',
-                        live
-                            ? 'bg-(--deck-accent) shadow-[0_0_6px_var(--deck-accent)] motion-safe:animate-[breathe_2s_ease-in-out_infinite]'
-                            : 'bg-(--deck-fg-4)',
-                    )}
-                />
-                <span className="max-w-30 truncate text-[11px] font-semibold text-(--deck-fg-2)">
-                    {runningGameTitle || _(msg`No session`)}
+            <div className="mx-auto flex max-w-3xl items-center gap-3">
+                <button
+                    type="button"
+                    className="flex min-h-12 shrink-0 items-center gap-2 rounded-xl px-3 text-sm font-semibold text-(--deck-fg-2) hover:bg-white/5"
+                    onClick={onOpenSettings}
+                >
+                    <Icon className="size-5" name="settings" />
+                    {_(msg`Settings`)}
+                </button>
+                <span className="min-w-0 flex-1 truncate text-center text-xs text-(--deck-fg-2)">
+                    {runningGameTitle || _(connected ? msg`PC connected` : msg`PC offline`)}
                 </span>
+                <button
+                    type="button"
+                    className="flex min-h-12 shrink-0 items-center gap-2 rounded-xl bg-(--deck-accent) px-4 text-sm font-semibold text-black"
+                    onClick={onOpenLibrary}
+                >
+                    <Icon className="size-5" name="list" />
+                    {_(msg`Library`)}
+                </button>
             </div>
-            <DockButton
-                badge={rightHasBadge}
-                icon="list"
-                label={_(msg`Library`)}
-                onClick={onOpenLibrary}
-            />
-        </div>
-    );
-};
-
-type DockButtonProps = {
-    badge: boolean;
-    icon: IconName;
-    label: string;
-    onClick: () => void;
-};
-
-const DockButton = ({ badge, icon, label, onClick }: DockButtonProps) => {
-    return (
-        <button
-            type="button"
-            aria-label={label}
-            className="relative flex h-9.5 w-11 items-center justify-center rounded-full text-(--deck-fg) hover:bg-white/6"
-            onClick={onClick}
-        >
-            <Icon className="size-4.5" name={icon} stroke={1.7} />
-            {badge ? (
-                <span className="absolute right-2 top-1.5 size-1.5 rounded-full bg-(--deck-accent) shadow-[0_0_4px_var(--deck-accent)]" />
-            ) : null}
-        </button>
+        </nav>
     );
 };

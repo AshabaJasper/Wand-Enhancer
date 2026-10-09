@@ -36,8 +36,8 @@
     --deck-line-2: rgba(255, 255, 255, 0.1);
     --deck-fg: #f2f4f8;
     --deck-fg-2: #b6bccb;
-    --deck-fg-3: #7f8699;
-    --deck-fg-4: #535a6b;
+    --deck-fg-3: #a5adbf;
+    --deck-fg-4: #98a2b7;
     --deck-accent: #00ffd5;
     --background: oklch(0.122 0.022 255);
     --foreground: oklch(0.968 0.016 96);
@@ -204,5 +204,53 @@
 
     50% {
         opacity: 0.4;
+    }
+}
+
+/* Phone-first defaults also cover narrow desktop windows and keyboard navigation. */
+.remote-app {
+    color-scheme: dark;
+}
+.remote-app ::selection {
+    background: var(--deck-accent);
+    color: #07080b;
+}
+.remote-app input {
+    caret-color: var(--deck-accent);
+    font-variant-numeric: tabular-nums;
+}
+.remote-app button:focus-visible,
+.remote-app input:focus-visible,
+.remote-app select:focus-visible {
+    outline: 2px solid var(--deck-accent);
+    outline-offset: 3px;
+}
+.remote-app button {
+    touch-action: manipulation;
+}
+.remote-app .remote-scrollbar-hidden {
+    scrollbar-width: thin;
+    scrollbar-color: #485268 transparent;
+}
+.remote-app .remote-scrollbar-hidden::-webkit-scrollbar {
+    display: block;
+    width: 5px;
+}
+.remote-app .remote-scrollbar-hidden::-webkit-scrollbar-thumb {
+    background: #485268;
+    border-radius: 4px;
+}
+@media (max-width: 639px) {
+    .remote-app input:not([type="range"]),
+    .remote-app select {
+        font-size: 16px;
+    }
+    .remote-app button {
+        min-height: 44px;
+        min-width: 44px;
+    }
+    .remote-app .remote-glass-header {
+        backdrop-filter: none;
+        background: #10131a;
     }
 }

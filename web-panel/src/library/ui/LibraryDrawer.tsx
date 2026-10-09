@@ -190,7 +190,7 @@ const GameRow = ({ game, canLaunch, query, onPin, onPlay, onStop }: GameRowProps
         >
             <GameCover game={game} />
             <div className="min-w-0 flex-1">
-                <h4 className="truncate text-[13.5px] font-semibold text-(--deck-fg)">
+                <h4 className="line-clamp-2 text-base font-semibold text-(--deck-fg)">
                     {highlightTitle(game.title, query)}
                 </h4>
                 <div className="mt-0.5 flex min-w-0 items-center gap-1.5 font-mono text-[10.5px] tracking-[0.02em] text-(--deck-fg-3)">

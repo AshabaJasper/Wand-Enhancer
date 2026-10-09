@@ -23,8 +23,10 @@ export const SessionPlaceholder = ({
         return (
             <PlaceholderState
                 icon="plug"
-                title={_(msg`Bridge offline`)}
-                sub={_(msg`Open Settings to point Wand at your trainer bridge over WebSocket.`)}
+                title={_(msg`Connect to your PC`)}
+                sub={_(
+                    msg`Keep Wand open on your PC and use the same Wi-Fi. After a Wand update, reapply Enhancer on the PC, then reconnect here.`,
+                )}
                 action={_(msg`Open Settings`)}
                 onAction={onOpenSettings}
             />
@@ -37,7 +39,7 @@ export const SessionPlaceholder = ({
                 icon="gamepad-variant-outline"
                 title={_(msg`Select a game`)}
                 sub={_(
-                    msg`No game is running yet. Open the library and launch one to start tweaking.`,
+                    msg`Your PC is connected. Choose a game from your library. For RDR2, load Story Mode before starting its trainer.`,
                 )}
                 action={_(msg`Browse library`)}
                 onAction={onOpenLibrary}

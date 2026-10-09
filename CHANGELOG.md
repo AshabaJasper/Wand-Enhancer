@@ -3,6 +3,16 @@
 This file is the source of truth for release notes.
 The newest entry must match the version in `WandEnhancer/Properties/AssemblyInfo.cs`.
 
+## [2.1.1.0] - 2026-10-09
+
+### Personal fork update
+
+- Stage complete support-file replacements before swapping folders; preserve live files when preparation or replacement fails, and recover interrupted swaps on retry.
+- Cover preparation failures with rollback, and use the same safe replacement for Restore.
+- Show installed Wand version, build identity, support-file health, recovery guidance and a Rescan action in the desktop UI.
+- Refine the remote panel for phones: persistent labelled navigation, safe-area spacing, larger touch targets, readable text, and clearer connection guidance.
+- Add illustrated setup and recovery instructions. Wand 12.62.0 integration is the target; gameplay compatibility remains separate.
+
 ## [2.1.0.0] - 2026-09-09
 
 ### Features

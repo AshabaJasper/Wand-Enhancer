@@ -42,7 +42,9 @@ describe('Drawer', () => {
         openBtn.focus();
         expect(document.activeElement).toBe(openBtn);
 
+        const focusSpy = vi.spyOn(screen.getByText('Inside'), 'focus');
         fireEvent.click(openBtn);
+        expect(focusSpy).toHaveBeenCalledWith({ preventScroll: true });
         expect(document.activeElement).toBe(screen.getByText('Inside'));
 
         fireEvent.click(screen.getByLabelText('Close drawer'));

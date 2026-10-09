@@ -21,6 +21,13 @@ namespace WandEnhancer.View.MainWindow
         private readonly IFileDialogs _dialogs;
         public ObservableCollection<LogEntry> LogList { get; } = new ObservableCollection<LogEntry>();
         private WeModConfig _weModConfig;
+        private string _healthSummary;
+        private bool _recoveryNeeded;
+        public string HealthSummary { get => _healthSummary; private set => SetProperty(ref _healthSummary, value); }
+        public bool RecoveryNeeded { get => _recoveryNeeded; private set => SetProperty(ref _recoveryNeeded, value); }
+        public string InstallationVersion => WeModInfo == null ? "No installation selected" :
+            "Wand " + Path.GetFileName(WeModInfo.RootDirectory).Replace("app-", "");
+        public RelayCommand RefreshInstallCommand { get; }
 
         public WeModConfig WeModInfo
         {
@@ -31,15 +38,21 @@ namespace WandEnhancer.View.MainWindow
         private void UseInstall(WeModConfig config)
         {
             WeModInfo = config;
+            OnPropertyChanged(nameof(InstallationVersion));
             if (config == null)
             {
+                AlreadyPatched = CanRestore = IsPatchEnabled = RecoveryNeeded = false;
+                HealthSummary = "Choose the Wand installation folder to continue.";
                 return;
             }
 
             Log(LocalizationManager.Format("log_install_found", config, config.ExecutableName), ELogType.Success);
-            AlreadyPatched = Enhancer.IsPatched(config.RootDirectory);
+            string issue = Enhancer.GetInstallationIssue(config.RootDirectory);
+            RecoveryNeeded = issue != null;
+            AlreadyPatched = !RecoveryNeeded && Enhancer.IsPatched(config.RootDirectory);
             CanRestore = Enhancer.HasBackup(config.RootDirectory);
-            IsPatchEnabled = !AlreadyPatched;
+            IsPatchEnabled = true;
+            HealthSummary = issue ?? (CanRestore ? "Support files verified. Original backup available." : "Support files verified. A backup will be created before changes.");
 
             Log(LocalizationManager.Get(AlreadyPatched ? "log_already_patched" : "log_ready"),
                 AlreadyPatched ? ELogType.Warn : ELogType.Info);
@@ -139,6 +152,7 @@ namespace WandEnhancer.View.MainWindow
             });
 
             IsBusy = false;
+            UseInstall(WeModInfo);
             if (restored)
             {
                 AlreadyPatched = false;
@@ -165,8 +179,6 @@ namespace WandEnhancer.View.MainWindow
                     try
                     {
                         new Enhancer(WeModInfo, Log, config).Patch();
-                        AlreadyPatched = true;
-                        CanRestore = true;
                     }
                     catch (Exception e)
                     {
@@ -175,6 +187,7 @@ namespace WandEnhancer.View.MainWindow
                     }
                 });
                 IsBusy = false;
+                UseInstall(WeModInfo);
             }), LocalizationManager.Get("pv_popup_title"));
         }
 
@@ -261,6 +274,7 @@ namespace WandEnhancer.View.MainWindow
             OpenSettingsCommand = new RelayCommand(OnOpenSettings);
             CopyLogsCommand = new RelayCommand(OnCopyLogs, HasLogs);
             ExportLogsCommand = new RelayCommand(OnExportLogs, HasLogs);
+            RefreshInstallCommand = new RelayCommand(_ => UseInstall(WeModInstalls.FindWeMod()));
 
             UseInstall(WeModInstalls.FindWeMod());
             if (WeModInfo == null)

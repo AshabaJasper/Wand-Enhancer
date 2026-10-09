@@ -19,9 +19,9 @@ type IconButtonProps = {
 };
 
 const SIZE_CLASS: Record<IconButtonSize, string> = {
-    sm: 'size-7.5 rounded-[7px]',
-    md: 'size-8 rounded-[8px]',
-    lg: 'size-[34px] rounded-[9px]',
+    sm: 'size-11 shrink-0 rounded-[10px]',
+    md: 'size-11 shrink-0 rounded-[10px]',
+    lg: 'size-12 shrink-0 rounded-xl',
 };
 
 const ICON_SIZE_CLASS: Record<IconButtonSize, string> = {

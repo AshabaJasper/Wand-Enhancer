@@ -29,8 +29,9 @@ foreach($scenario in @(
  [Windows.Documents.TextElement]::SetForeground($root,$app.Resources['Foreground'])
  [Windows.Documents.TextElement]::SetFontFamily($root,(New-Object Windows.Media.FontFamily('Segoe UI')))
  [Windows.Documents.TextElement]::SetFontSize($root,14)
- $install=if($scenario.Missing){$null}else{[pscustomobject]@{RootDirectory='C:\Users\Player\AppData\Local\Wand\app-12.56.0'}}
+ $install=if($scenario.Missing){$null}else{[pscustomobject]@{RootDirectory='C:\Users\Player\AppData\Local\Wand\app-12.62.0'}}
  $root.DataContext=[pscustomobject]@{
+  InstallationVersion="Wand 12.62.0";HealthSummary="Support files verified. Original backup available.";RecoveryNeeded=$false;RefreshInstallCommand=$null
   WeModInfo=$install;IsBusy=$scenario.Busy;IsIdle=(-not $scenario.Busy);AlreadyPatched=$scenario.Patched
   CanRestore=$scenario.Patched;IsPatchEnabled=(-not $scenario.Patched -and -not $scenario.Missing)
   IsUpdateAvailable=$false;ShowUpdateCommand=$null

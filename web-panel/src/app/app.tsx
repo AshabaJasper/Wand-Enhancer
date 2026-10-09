@@ -21,9 +21,9 @@ export const App = () => {
     const { session, trainer, library, shell } = panel;
 
     return (
-        <main className="min-h-svh bg-[#050608] text-(--deck-fg)">
-            <div className="flex min-h-svh w-full p-0">
-                <section className="relative h-svh w-full overflow-hidden bg-(--deck-bg) shadow-[0_40px_100px_-20px_rgba(0,0,0,.7),0_0_0_1px_rgba(255,255,255,.06)]">
+        <main className="remote-app min-h-svh bg-[#050608] text-(--deck-fg)">
+            <div className="flex min-h-dvh w-full p-0">
+                <section className="relative h-dvh w-full overflow-clip bg-(--deck-bg) shadow-[0_40px_100px_-20px_rgba(0,0,0,.7),0_0_0_1px_rgba(255,255,255,.06)]">
                     <div className="pointer-events-none absolute -inset-12 z-0 bg-[radial-gradient(circle_at_30%_15%,color-mix(in_oklab,var(--deck-accent)_22%,transparent),transparent_45%),radial-gradient(circle_at_80%_85%,color-mix(in_oklab,var(--deck-accent)_16%,transparent),transparent_45%),radial-gradient(circle_at_20%_80%,color-mix(in_oklab,var(--deck-accent)_8%,transparent),transparent_50%)]" />
                     <div className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(ellipse_100%_60%_at_50%_0%,rgba(255,255,255,0.025),transparent)]" />
                     <div className="relative z-10 flex h-full flex-col">
@@ -34,7 +34,7 @@ export const App = () => {
                             onOpenSettings={shell.openSettings}
                         />
                         <div
-                            className="remote-scrollbar-hidden min-h-0 flex-1 overflow-y-auto overscroll-contain px-3.5 pb-27.5"
+                            className="remote-scrollbar-hidden min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pb-[calc(96px+env(safe-area-inset-bottom))] sm:px-6"
                             onScroll={shell.onScroll}
                         >
                             {!session.connected || !trainer.activeTrainer ? (

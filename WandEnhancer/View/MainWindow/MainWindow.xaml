@@ -18,7 +18,7 @@
      <StackPanel Orientation="Horizontal">
       <Viewbox Width="28" Height="28" Margin="0 0 12 0" AutomationProperties.Name="Wand Enhancer logo"><Path Fill="{DynamicResource Foreground}" Data="{StaticResource Logo}"/></Viewbox>
       <TextBlock Text="Wand Enhancer" FontSize="25" FontWeight="SemiBold"/>
-      <Border Background="{DynamicResource Secondary}" CornerRadius="5" Padding="7 3" Margin="12 0 0 0" VerticalAlignment="Center"><TextBlock x:Name="VersionLabel" Text="2.1.0.0" FontSize="11" Foreground="{DynamicResource MutedForeground}"/></Border>
+      <Border Background="{DynamicResource Secondary}" CornerRadius="5" Padding="7 3" Margin="12 0 0 0" VerticalAlignment="Center"><TextBlock x:Name="VersionLabel" Text="2.1.1.0" FontSize="11" Foreground="{DynamicResource MutedForeground}"/></Border>
      </StackPanel>
      <TextBlock Margin="0 8 16 0" Text="{DynamicResource ui_subtitle}" TextWrapping="Wrap" Foreground="{DynamicResource MutedForeground}"/>
     </StackPanel>
@@ -31,18 +31,21 @@
    </Grid>
    <Border Grid.Row="1" Padding="18" Margin="0 0 0 18" CornerRadius="10" Background="{DynamicResource Muted}" BorderBrush="{DynamicResource Border}" BorderThickness="1">
     <StackPanel>
-     <TextBlock Foreground="{DynamicResource MutedForeground}" FontSize="11" FontWeight="SemiBold" Text="{DynamicResource ui_installation}"/>
+     <TextBlock Foreground="{DynamicResource MutedForeground}" FontSize="14" FontWeight="SemiBold" Text="{Binding InstallationVersion}"/>
      <TextBlock Margin="0 7 0 0" FontSize="20" FontWeight="SemiBold" AutomationProperties.LiveSetting="Polite">
       <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Text" Value="{DynamicResource ui_ready}"/><Style.Triggers>
        <DataTrigger Binding="{Binding WeModInfo}" Value="{x:Null}"><Setter Property="Text" Value="{DynamicResource ui_missing}"/></DataTrigger>
        <DataTrigger Binding="{Binding AlreadyPatched}" Value="True"><Setter Property="Text" Value="{DynamicResource ui_applied}"/></DataTrigger>
+       <DataTrigger Binding="{Binding RecoveryNeeded}" Value="True"><Setter Property="Text" Value="Recovery needed"/><Setter Property="Foreground" Value="#FCD34D"/></DataTrigger>
        <DataTrigger Binding="{Binding IsBusy}" Value="True"><Setter Property="Text" Value="{DynamicResource ui_working}"/></DataTrigger>
       </Style.Triggers></Style></TextBlock.Style>
      </TextBlock>
+     <TextBlock Text="{Binding HealthSummary}" Margin="0 8 0 0" TextWrapping="Wrap" Foreground="{DynamicResource MutedForeground}" FontSize="13" AutomationProperties.LiveSetting="Polite"/>
      <Grid Margin="0 14 0 0" IsEnabled="{Binding IsIdle}">
-      <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+      <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
       <TextBox Text="{Binding WeModInfo.RootDirectory, Mode=OneWay}" IsReadOnly="True" AutomationProperties.Name="{DynamicResource mw_folder_path}" Background="{DynamicResource Background}" Foreground="{DynamicResource Foreground}" BorderBrush="{DynamicResource Border}" Padding="10 8" FontSize="12" VerticalContentAlignment="Center" Margin="0 0 10 0"/>
       <Button Grid.Column="1" Content="{DynamicResource ui_browse}" Padding="16 8" Command="{Binding SetFolderPathCommand}"/>
+      <Button Grid.Column="2" Content="Rescan" Padding="12 8" Margin="8 0 0 0" Command="{Binding RefreshInstallCommand}" ToolTip="Find the latest installed Wand version and check its files"/>
      </Grid>
      <StackPanel Margin="0 12 0 0" Visibility="{Binding IsBusy, Converter={StaticResource ToVisibilityConverter}}">
       <ProgressBar Height="4" IsIndeterminate="{Binding IsBusy}" AutomationProperties.Name="{DynamicResource ui_working}"/>
@@ -64,7 +67,7 @@
      <ListBox Grid.Row="1" x:Name="LogList" ItemsSource="{Binding LogList}" Background="Transparent" BorderThickness="0" Padding="10 0 10 10" AutomationProperties.Name="{DynamicResource ui_activity}" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Disabled" HorizontalContentAlignment="Stretch">
       <ListBox.ItemContainerStyle><Style TargetType="ListBoxItem"><Setter Property="HorizontalContentAlignment" Value="Stretch"/><Setter Property="Margin" Value="0 3"/><Setter Property="Template"><Setter.Value>
        <ControlTemplate TargetType="ListBoxItem">
-        <Border x:Name="Card" Background="{DynamicResource Muted}" BorderBrush="{DynamicResource Border}" BorderThickness="3 0 0 0" CornerRadius="4" Padding="9 7">
+        <Border x:Name="Card" Background="{DynamicResource Muted}" BorderBrush="{DynamicResource Border}" BorderThickness="1" CornerRadius="4" Padding="9 7">
          <TextBox x:Name="Message" Text="{Binding Message}" IsReadOnly="True" TextWrapping="Wrap" FontFamily="Consolas" FontSize="12" Background="Transparent" Foreground="{DynamicResource Foreground}" BorderThickness="0" Padding="0"/>
         </Border>
         <ControlTemplate.Triggers>

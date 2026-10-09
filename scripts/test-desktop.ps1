@@ -135,6 +135,13 @@ try {
     [IO.File]::Copy($asar, $backup)
     [IO.Directory]::CreateDirectory($unpackedBackup) | Out-Null
     $archiveBefore = (Get-FileHash -LiteralPath $asar -Algorithm SHA256).Hash
+    $operationLock = [IO.File]::Open((Join-Path $install '.enhancer-operation.lock'), 'OpenOrCreate', 'ReadWrite', 'None')
+    try {
+        $rejected = $false
+        try { $enhancerType.GetMethod('Patch').Invoke($enhancer, $null) } catch { $rejected = $_.Exception.GetBaseException().Message.Contains('being used by another process') -or $_.Exception.Message.Contains('Another Enhancer operation') }
+        Assert-Equal $rejected $true 'Concurrent operation rejected'
+        Assert-Equal (Test-Path -LiteralPath $marker) $false 'Concurrent operation leaves no marker'
+    } finally { $operationLock.Dispose(); [IO.File]::Delete((Join-Path $install '.enhancer-operation.lock')) }
     $rejected = $false
     try { $enhancerType.GetMethod('Patch').Invoke($enhancer, $null) | Out-Null }
     catch { $rejected = $_.Exception.GetBaseException().Message.Contains('support files are incomplete') }
@@ -147,7 +154,38 @@ try {
     try { $validate.Invoke($null, $validateArguments) | Out-Null }
     catch { $rejected = $_.Exception.GetBaseException().Message.Contains('support files are incomplete') }
     Assert-Equal $rejected $true 'Truncated support file rejected'
-    Write-Host 'Desktop regression checks passed (native sizes, backups, rollback, retry state, restore, empty backup and truncated support files).'
+    # Support replacement must never delete live files before a replacement is ready.
+    $replace = $enhancerType.GetMethod('ReplaceSupportDirectory', $privateStatic)
+    Assert-Equal ($null -ne $replace) $true 'Transactional support replacement exists'
+    $from = Join-Path $scratch 'replacement-source'
+    $to = Join-Path $scratch 'replacement-live'
+    [IO.Directory]::CreateDirectory($from) | Out-Null
+    [IO.Directory]::CreateDirectory($to) | Out-Null
+    [IO.File]::WriteAllText((Join-Path $from 'native.dll'), 'new native fixture')
+    [IO.File]::WriteAllText((Join-Path $to 'working.dll'), 'working original')
+    $replaceArgs = [object[]]@([string]$from, [string]$to)
+    $locked = [IO.File]::Open((Join-Path $from 'native.dll'), 'Open', 'ReadWrite', 'None')
+    try {
+        $failed = $false
+        try { $replace.Invoke($null, $replaceArgs) } catch { $failed = $true }
+        Assert-Equal $failed $true 'Locked source rejects preparation'
+        Assert-Equal ([IO.File]::ReadAllText((Join-Path $to 'working.dll'))) 'working original' 'Copy failure preserves live support'
+    } finally { $locked.Dispose() }
+    # An occupied swap destination must fail before moving/deleting the live directory.
+    [IO.File]::WriteAllText(($to + '.restore-previous'), 'blocked swap')
+    $failed = $false
+    try { $replace.Invoke($null, $replaceArgs) } catch { $failed = $true }
+    Assert-Equal $failed $true 'Blocked swap reports failure'
+    Assert-Equal ([IO.File]::ReadAllText((Join-Path $to 'working.dll'))) 'working original' 'Swap failure preserves live support'
+    [IO.File]::Delete($to + '.restore-previous')
+    # Simulate interruption between the two directory renames, then retry.
+    [IO.Directory]::Move($to, $to + '.restore-previous')
+    $replace.Invoke($null, $replaceArgs)
+    Assert-Equal ([IO.File]::ReadAllText((Join-Path $to 'native.dll'))) 'new native fixture' 'Retry installs complete replacement'
+    Assert-Equal (Test-Path ($to + '.restore-previous')) $false 'Retry clears previous directory'
+    Assert-Equal (Test-Path ($to + '.restore-staging')) $false 'Retry clears staging directory'
+    Assert-Equal ([IO.File]::ReadAllText((Join-Path $from 'native.dll'))) 'new native fixture' 'Replacement preserves source backup'
+    Write-Host 'Desktop regression checks passed (native sizes, backups, rollback, retry, restore, incomplete files and transactional support replacement).'
 }
 finally {
     Remove-Item -LiteralPath $scratch -Recurse -Force

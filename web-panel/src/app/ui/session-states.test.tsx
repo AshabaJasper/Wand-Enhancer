@@ -35,7 +35,7 @@ describe('session state components', () => {
             />,
         );
         fireEvent.click(screen.getByRole('button', { name: 'Open Settings' }));
-        expect(screen.getByText('Bridge offline')).toBeTruthy();
+        expect(screen.getByText('Connect to your PC')).toBeTruthy();
         expect(openSettings).toHaveBeenCalledOnce();
     });
 

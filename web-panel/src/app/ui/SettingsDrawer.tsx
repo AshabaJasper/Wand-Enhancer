@@ -111,7 +111,7 @@ const BridgeControl = ({
         status === EConnectionStatus.Connecting || status === EConnectionStatus.Reconnecting;
     const handleInput = (event: FormEvent<HTMLInputElement>) =>
         onWsUrlChange(event.currentTarget.value);
-    const buttonLabel = connecting ? '...' : _(live ? msg`STOP` : msg`GO`);
+    const buttonLabel = connecting ? _(msg`Connecting`) : _(live ? msg`Disconnect` : msg`Connect`);
 
     return (
         <section>
@@ -121,12 +121,13 @@ const BridgeControl = ({
                 </h3>
                 <StatusPill status={status} />
             </div>
-            <div className="remote-glass-control flex h-10 items-stretch overflow-hidden rounded-[10px] border">
+            <div className="remote-glass-control flex min-h-12 flex-wrap items-stretch overflow-hidden rounded-[10px] border">
                 <input
+                    aria-label={_(msg`PC connection address`)}
                     value={wsUrl}
                     placeholder={`ws://127.0.0.1:${WEB_CONTRACT.defaultRemotePort}${WEB_CONTRACT.webSocketPath}`}
                     spellCheck={false}
-                    className="min-w-0 flex-1 bg-transparent px-3 font-mono text-[12.5px] text-(--deck-fg) outline-none placeholder:text-(--deck-fg-4)"
+                    className="min-w-0 flex-1 bg-transparent px-3 font-mono text-base text-(--deck-fg) outline-none placeholder:text-(--deck-fg-4)"
                     onInput={handleInput}
                 />
                 <button
@@ -147,7 +148,10 @@ const BridgeControl = ({
 
 const ErrorPanel = ({ message }: { message: string }) => {
     return (
-        <div className="mt-3 flex items-start gap-2 rounded-[10px] border border-red-400/25 bg-red-500/10 p-3 text-[12px] leading-5 text-red-100">
+        <div
+            role="alert"
+            className="mt-3 flex items-start gap-2 rounded-[10px] border border-red-400/25 bg-red-500/10 p-3 text-[12px] leading-5 text-red-100"
+        >
             <Icon className="mt-0.5 size-3.5 shrink-0" name="alert" />
             <span>{message}</span>
         </div>

@@ -103,6 +103,24 @@ namespace WandEnhancer.Core
 
         public void Patch()
         {
+            using (AcquireOperationLock()) PatchCore();
+        }
+
+        private FileStream AcquireOperationLock()
+        {
+            try
+            {
+                return new FileStream(Path.Combine(_weModConfig.RootDirectory, ".enhancer-operation.lock"),
+                    FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None, 1, FileOptions.DeleteOnClose);
+            }
+            catch (IOException e)
+            {
+                throw new IOException("Another Enhancer operation may be running. Wait for it to finish before retrying.", e);
+            }
+        }
+
+        private void PatchCore()
+        {
             // A directory left behind by an interrupted restore is not a usable backup.
             // Check the selected source before stopping Wand, replacing files or writing a marker.
             ValidateUnpackedFiles(
@@ -112,48 +130,44 @@ namespace WandEnhancer.Core
             string markerPath = Path.Combine(Path.GetDirectoryName(_asarPath), IncompletePatchMarkerFileName);
             File.WriteAllText(markerPath, string.Empty);
 
-            if (!File.Exists(_backupPath))
-            {
-                _logger("[ENHANCER] Creating backup...", ELogType.Info);
-                CreateBackupFile(_asarPath, _backupPath);
-            }
-            else
-            {
-                _logger("[ENHANCER] Backup found, restoring pristine app.asar before patching...", ELogType.Info);
-                AsarSharp.Utils.Extensions.CopyOver(_backupPath, _asarPath);
-            }
-
-            if (!Directory.Exists(_unpackedBackupPath) && Directory.Exists(_unpackedPath))
-            {
-                _logger("[ENHANCER] Creating backup of app.asar.unpacked...", ELogType.Info);
-                CreateBackupDirectory(_unpackedPath, _unpackedBackupPath);
-            }
-            else if (Directory.Exists(_unpackedBackupPath))
-            {
-                _logger("[ENHANCER] Restoring pristine app.asar.unpacked before patching...", ELogType.Info);
-                if (Directory.Exists(_unpackedPath))
-                {
-                    Directory.Delete(_unpackedPath, true);
-                }
-
-                AsarSharp.Utils.Extensions.CopyDirectory(_unpackedBackupPath, _unpackedPath);
-            }
-            else if (!Directory.Exists(_unpackedPath))
-            {
-                throw new Exception("[ENHANCER] app.asar.unpacked is missing and no backup exists. Restore the original Wand installation files or reinstall Wand, then patch again.");
-            }
-
-            if (!File.Exists(_asarPath))
-            {
-                throw new Exception("app.asar not found");
-            }
-
-            // Start from a pristine executable to not inherit a broken signature from prior static patches.
-            DiskFusePatch.Remove(_weModConfig.ExecutablePath, _logger);
-
-            // Never leave a patched archive behind without its launcher.
+            // Preparation and replacement can fail too (for example while a game holds a DLL).
+            // Keep them inside the same recovery boundary as extraction and patching.
             try
             {
+                if (!File.Exists(_backupPath))
+                {
+                    _logger("[ENHANCER] Creating backup...", ELogType.Info);
+                    CreateBackupFile(_asarPath, _backupPath);
+                }
+                else
+                {
+                    _logger("[ENHANCER] Backup found, restoring pristine app.asar before patching...", ELogType.Info);
+                    AsarSharp.Utils.Extensions.CopyOver(_backupPath, _asarPath);
+                }
+
+                if (!Directory.Exists(_unpackedBackupPath) && Directory.Exists(_unpackedPath))
+                {
+                    _logger("[ENHANCER] Creating backup of app.asar.unpacked...", ELogType.Info);
+                    CreateBackupDirectory(_unpackedPath, _unpackedBackupPath);
+                }
+                else if (Directory.Exists(_unpackedBackupPath))
+                {
+                    _logger("[ENHANCER] Restoring pristine app.asar.unpacked before patching...", ELogType.Info);
+                    ReplaceSupportDirectory(_unpackedBackupPath, _unpackedPath);
+                }
+                else if (!Directory.Exists(_unpackedPath))
+                {
+                    throw new Exception("[ENHANCER] app.asar.unpacked is missing and no backup exists. Restore the original Wand installation files or reinstall Wand, then patch again.");
+                }
+
+                if (!File.Exists(_asarPath))
+                {
+                    throw new Exception("app.asar not found");
+                }
+
+                // Start from a pristine executable to not inherit a broken signature from prior static patches.
+                DiskFusePatch.Remove(_weModConfig.ExecutablePath, _logger);
+
                 ExtractSources();
                 new AsarContentPatcher(_unpackedPath, _logger, new JavaScriptPatchApplier(_logger)).Patch(_config.PatchTypes);
                 new RemotePanelInjector(_unpackedPath, _logger).Inject(_config.PatchTypes, _config.CustomScriptPaths);
@@ -298,6 +312,75 @@ namespace WandEnhancer.Core
             }
         }
 
+        /// <summary>Prepare a full replacement before moving the live directory. Never delete it in place.</summary>
+        private static void ReplaceSupportDirectory(string source, string destination)
+        {
+            source = Path.GetFullPath(source);
+            destination = Path.GetFullPath(destination);
+            if (string.Equals(source, destination, StringComparison.OrdinalIgnoreCase)
+                || AsarSharp.Utils.Extensions.IsPathInside(source, destination)
+                || AsarSharp.Utils.Extensions.IsPathInside(destination, source))
+                throw new IOException("Support backup and live directory must be separate.");
+
+            string staging = destination + ".restore-staging";
+            string previous = destination + ".restore-previous";
+            // Resume an interrupted directory swap before starting another operation.
+            if (Directory.Exists(previous) && !Directory.Exists(destination))
+                Directory.Move(previous, destination);
+            if (Directory.Exists(previous))
+                Directory.Delete(previous, true);
+            if (Directory.Exists(staging))
+                Directory.Delete(staging, true);
+
+            bool movedOriginal = false;
+            try
+            {
+                AsarSharp.Utils.Extensions.CopyDirectory(source, staging);
+                if (Directory.Exists(destination))
+                {
+                    Directory.Move(destination, previous);
+                    movedOriginal = true;
+                }
+                try { Directory.Move(staging, destination); }
+                catch
+                {
+                    if (movedOriginal && !Directory.Exists(destination))
+                        Directory.Move(previous, destination);
+                    throw;
+                }
+            }
+            catch (Exception e) when (e is IOException || e is UnauthorizedAccessException)
+            {
+                throw new IOException("Could not replace Wand support files safely. " +
+                    "Close games and Wand, then retry. The previous files and original backup are retained. " + e.Message, e);
+            }
+            finally
+            {
+                // A locked leftover is recoverable on the next attempt; never hide the original error.
+                try { if (Directory.Exists(staging)) Directory.Delete(staging, true); }
+                catch (IOException) { }
+                catch (UnauthorizedAccessException) { }
+            }
+            try { if (Directory.Exists(previous)) Directory.Delete(previous, true); }
+            catch (IOException) { }
+            catch (UnauthorizedAccessException) { }
+        }
+
+        public static string GetInstallationIssue(string rootDirectory)
+        {
+            var resources = Path.Combine(rootDirectory, ResourcesDirectoryName);
+            if (File.Exists(Path.Combine(resources, IncompletePatchMarkerFileName)))
+                return "A previous change did not finish. Close games, then reapply or restore.";
+            try
+            {
+                ValidateUnpackedFiles(Path.Combine(resources, AppAsarFileName), Path.Combine(resources, AppAsarUnpackedDirectoryName));
+                if (HasBackup(rootDirectory))
+                    ValidateUnpackedFiles(Path.Combine(resources, AppAsarBackupFileName), Path.Combine(resources, AppAsarUnpackedBackupDirectoryName));
+                return null;
+            }
+            catch (Exception e) { return "Support files need attention: " + e.Message; }
+        }
+
         /// <summary>Best-effort restore after failed patch. Does not throw.</summary>
         private void RollbackQuietly()
         {
@@ -310,12 +393,7 @@ namespace WandEnhancer.Core
 
                 if (Directory.Exists(_unpackedBackupPath))
                 {
-                    if (Directory.Exists(_unpackedPath))
-                    {
-                        Directory.Delete(_unpackedPath, true);
-                    }
-
-                    AsarSharp.Utils.Extensions.CopyDirectory(_unpackedBackupPath, _unpackedPath);
+                    ReplaceSupportDirectory(_unpackedBackupPath, _unpackedPath);
                 }
 
                 // Undo on-disk fuse and launcher deployment to prevent a tampered unlaunchable Wand.
@@ -333,6 +411,11 @@ namespace WandEnhancer.Core
 
         public void Restore()
         {
+            using (AcquireOperationLock()) RestoreCore();
+        }
+
+        private void RestoreCore()
+        {
             if (!File.Exists(_backupPath) || !Directory.Exists(_unpackedBackupPath))
             {
                 throw new Exception("[ENHANCER] Backup is incomplete. Restore the original Wand installation files or reinstall Wand.");
@@ -341,12 +424,7 @@ namespace WandEnhancer.Core
             ProcessTerminator.TryKillProcess(_weModConfig.BrandName);
             AsarSharp.Utils.Extensions.CopyOver(_backupPath, _asarPath);
 
-            if (Directory.Exists(_unpackedPath))
-            {
-                Directory.Delete(_unpackedPath, true);
-            }
-
-            AsarSharp.Utils.Extensions.CopyDirectory(_unpackedBackupPath, _unpackedPath);
+            ReplaceSupportDirectory(_unpackedBackupPath, _unpackedPath);
 
             // Clean up legacy proxy DLL
             var proxyDllPath = Path.Combine(_weModConfig.RootDirectory, ProxyDllFileName);

@@ -18,7 +18,7 @@ namespace WandEnhancer.View.MainWindow
             InitializeComponent();
             this.ViewModel = new MainWindowVm(this, new WindowsFileDialogs());
             this.DataContext = ViewModel;
-            VersionLabel.Text = Constants.Version.ToString();
+            VersionLabel.Text = Constants.Version + " · " + Constants.Build;
             // Keep the first launch usable on scaled laptop displays.
             Width = Math.Min(Width, SystemParameters.WorkArea.Width);
             Height = Math.Min(Height, SystemParameters.WorkArea.Height);

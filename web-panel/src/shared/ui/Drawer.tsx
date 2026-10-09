@@ -17,7 +17,7 @@ const DRAWER_CLOSED_CLASSES = {
 const DRAWER_OVERLAY_CLASS =
     'remote-drawer-overlay absolute inset-0 z-30 transition-opacity duration-200 ease-out motion-reduce:transition-none';
 const DRAWER_PANEL_CLASS =
-    'remote-drawer-panel absolute bottom-0 top-0 z-40 flex w-[88%] max-w-90 flex-col border-white/10 transition-transform duration-300 ease-out motion-reduce:transition-none';
+    'remote-drawer-panel absolute bottom-0 top-0 z-40 flex w-full max-w-full flex-col border-white/10 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] transition-transform duration-300 ease-out motion-reduce:transition-none sm:w-[440px]';
 
 const FOCUSABLE_SELECTOR =
     'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
@@ -61,7 +61,7 @@ export const Drawer = ({ open, side, label, children, onClose }: DrawerProps) =>
         document.addEventListener('keydown', handleKeyDown);
         return () => {
             document.removeEventListener('keydown', handleKeyDown);
-            restoreFocusRef.current?.focus?.();
+            restoreFocusRef.current?.focus?.({ preventScroll: true });
         };
     }, [open]);
 
@@ -70,6 +70,7 @@ export const Drawer = ({ open, side, label, children, onClose }: DrawerProps) =>
             <button
                 type="button"
                 aria-label={_(msg`Close drawer`)}
+                aria-hidden={!open}
                 tabIndex={open ? 0 : -1}
                 className={cn(
                     DRAWER_OVERLAY_CLASS,
@@ -98,7 +99,7 @@ export const Drawer = ({ open, side, label, children, onClose }: DrawerProps) =>
 };
 
 function focusFirst(panel: HTMLElement | null): void {
-    panel?.querySelector<HTMLElement>(FOCUSABLE_SELECTOR)?.focus();
+    panel?.querySelector<HTMLElement>(FOCUSABLE_SELECTOR)?.focus({ preventScroll: true });
 }
 
 function trapTab(event: KeyboardEvent, panel: HTMLElement | null): void {
@@ -115,12 +116,12 @@ function trapTab(event: KeyboardEvent, panel: HTMLElement | null): void {
 
     if (!event.shiftKey && active === last) {
         event.preventDefault();
-        first.focus();
+        first.focus({ preventScroll: true });
         return;
     }
 
     if (event.shiftKey && (active === first || !panel?.contains(active))) {
         event.preventDefault();
-        last.focus();
+        last.focus({ preventScroll: true });
     }
 }
