@@ -64,8 +64,8 @@ msgid "Bridge"
 msgstr "Bridge"
 
 #: src/app/ui/SessionPlaceholder.tsx
-msgid "Bridge offline"
-msgstr "Bridge offline"
+#~ msgid "Bridge offline"
+#~ msgstr "Bridge offline"
 
 #: src/app/ui/SessionPlaceholder.tsx
 msgid "Browse library"
@@ -86,6 +86,10 @@ msgstr "Character"
 #: src/trainer/ui/category-labels.ts
 msgid "Cheats"
 msgstr "Cheats"
+
+#: src/app/ui/TopBar.tsx
+msgid "Choose a game to begin"
+msgstr "Choose a game to begin"
 
 #: src/shared/ui/SearchInput.tsx
 msgid "Clear search"
@@ -111,6 +115,23 @@ msgstr "Close settings"
 msgid "Cobalt"
 msgstr "Cobalt"
 
+#: src/app/ui/SettingsDrawer.tsx
+msgid "Connect"
+msgstr "Connect"
+
+#: src/app/ui/SessionPlaceholder.tsx
+msgid "Connect to your PC"
+msgstr "Connect to your PC"
+
+#: src/app/ui/StatusPill.tsx
+msgid "Connected"
+msgstr "Connected"
+
+#: src/app/ui/SettingsDrawer.tsx
+#: src/app/ui/StatusPill.tsx
+msgid "Connecting"
+msgstr "Connecting"
+
 #: src/trainer/ui/category-labels.ts
 msgid "Crafting"
 msgstr "Crafting"
@@ -131,6 +152,10 @@ msgstr "Cyan"
 #: src/trainer/ui/QuickActions.tsx
 msgid "Delete preset {0}"
 msgstr "Delete preset {0}"
+
+#: src/app/ui/SettingsDrawer.tsx
+msgid "Disconnect"
+msgstr "Disconnect"
 
 #. placeholder {0}: trainer.totalCheats
 #: src/app/app.tsx
@@ -154,13 +179,17 @@ msgstr "Favorites"
 msgid "Game"
 msgstr "Game"
 
+#: src/app/app.tsx
+msgid "Game library"
+msgstr "Game library"
+
 #: src/app/ui/SettingsDrawer.tsx
-msgid "GO"
-msgstr "GO"
+#~ msgid "GO"
+#~ msgstr "GO"
 
 #: src/app/ui/TopBar.tsx
-msgid "Idle · no game"
-msgstr "Idle · no game"
+#~ msgid "Idle · no game"
+#~ msgstr "Idle · no game"
 
 #: src/trainer/ui/category-labels.ts
 msgid "Inventory"
@@ -169,6 +198,10 @@ msgstr "Inventory"
 #: src/trainer/ui/category-labels.ts
 msgid "Items"
 msgstr "Items"
+
+#: src/app/ui/SessionPlaceholder.tsx
+msgid "Keep Wand open on your PC and use the same Wi-Fi. After a Wand update, reapply Enhancer on the PC, then reconnect here."
+msgstr "Keep Wand open on your PC and use the same Wi-Fi. After a Wand update, reapply Enhancer on the PC, then reconnect here."
 
 #: src/app/ui/SettingsDrawer.tsx
 msgid "Language"
@@ -184,12 +217,12 @@ msgid "Lime"
 msgstr "Lime"
 
 #: src/app/ui/StatusPill.tsx
-msgid "LINKING"
-msgstr "LINKING"
+#~ msgid "LINKING"
+#~ msgstr "LINKING"
 
 #: src/app/ui/StatusPill.tsx
-msgid "LIVE"
-msgstr "LIVE"
+#~ msgid "LIVE"
+#~ msgstr "LIVE"
 
 #: src/app/ui/SettingsDrawer.tsx
 msgid "Magenta"
@@ -208,8 +241,8 @@ msgid "No active game session."
 msgstr "No active game session."
 
 #: src/app/ui/SessionPlaceholder.tsx
-msgid "No game is running yet. Open the library and launch one to start tweaking."
-msgstr "No game is running yet. Open the library and launch one to start tweaking."
+#~ msgid "No game is running yet. Open the library and launch one to start tweaking."
+#~ msgstr "No game is running yet. Open the library and launch one to start tweaking."
 
 #: src/library/ui/LibraryDrawer.tsx
 msgid "No games match \"{query}\""
@@ -225,32 +258,53 @@ msgid "No options"
 msgstr "No options"
 
 #: src/app/ui/FloatingDock.tsx
-msgid "No session"
-msgstr "No session"
+#~ msgid "No session"
+#~ msgstr "No session"
 
 #: src/library/ui/LibraryDrawer.tsx
 msgid "Now Playing"
 msgstr "Now Playing"
 
 #: src/app/ui/StatusPill.tsx
-msgid "OFFLINE"
-msgstr "OFFLINE"
+msgid "Offline"
+msgstr "Offline"
+
+#: src/app/ui/StatusPill.tsx
+#~ msgid "OFFLINE"
+#~ msgstr "OFFLINE"
 
 #: src/app/ui/SessionPlaceholder.tsx
 msgid "Open Settings"
 msgstr "Open Settings"
 
 #: src/app/ui/SessionPlaceholder.tsx
-msgid "Open Settings to point Wand at your trainer bridge over WebSocket."
-msgstr "Open Settings to point Wand at your trainer bridge over WebSocket."
+#~ msgid "Open Settings to point Wand at your trainer bridge over WebSocket."
+#~ msgstr "Open Settings to point Wand at your trainer bridge over WebSocket."
 
 #: src/trainer/ui/QuickActions.tsx
 msgid "Panic Off"
 msgstr "Panic Off"
 
+#: src/app/ui/FloatingDock.tsx
+msgid "PC connected"
+msgstr "PC connected"
+
+#: src/app/ui/SettingsDrawer.tsx
+msgid "PC connection address"
+msgstr "PC connection address"
+
+#: src/app/ui/FloatingDock.tsx
+msgid "PC offline"
+msgstr "PC offline"
+
 #: src/trainer/ui/category-labels.ts
 msgid "Physics"
 msgstr "Physics"
+
+#. placeholder {0}: cheat.name
+#: src/trainer/ui/CheatTile.tsx
+msgid "Pin {0}"
+msgstr "Pin {0}"
 
 #: src/trainer/ui/category-labels.ts
 msgid "Pinned"
@@ -267,6 +321,14 @@ msgstr "Player"
 #: src/trainer/ui/QuickActions.tsx
 msgid "Preset name"
 msgstr "Preset name"
+
+#: src/app/ui/StatusPill.tsx
+msgid "Reconnecting"
+msgstr "Reconnecting"
+
+#: src/app/ui/FloatingDock.tsx
+msgid "Remote navigation"
+msgstr "Remote navigation"
 
 #: src/library/ui/LibraryDrawer.tsx
 #: src/trainer/ui/TrainerHeader.tsx
@@ -297,6 +359,7 @@ msgstr "Select a game"
 msgid "Session"
 msgstr "Session"
 
+#: src/app/app.tsx
 #: src/app/ui/FloatingDock.tsx
 #: src/app/ui/SettingsDrawer.tsx
 #: src/app/ui/TopBar.tsx
@@ -308,8 +371,8 @@ msgid "Stats"
 msgstr "Stats"
 
 #: src/app/ui/SettingsDrawer.tsx
-msgid "STOP"
-msgstr "STOP"
+#~ msgid "STOP"
+#~ msgstr "STOP"
 
 #: src/library/ui/LibraryDrawer.tsx
 msgid "Stop playing"
@@ -322,6 +385,11 @@ msgstr "Teleport"
 #: src/trainer/ui/TrainerHeader.tsx
 msgid "Trainer Active"
 msgstr "Trainer Active"
+
+#. placeholder {0}: cheat.name
+#: src/trainer/ui/CheatTile.tsx
+msgid "Unpin {0}"
+msgstr "Unpin {0}"
 
 #: src/trainer/ui/category-labels.ts
 msgid "Vehicles"
@@ -343,3 +411,7 @@ msgstr "Weapons"
 #: src/trainer/ui/category-labels.ts
 msgid "World"
 msgstr "World"
+
+#: src/app/ui/SessionPlaceholder.tsx
+msgid "Your PC is connected. Choose a game from your library. For RDR2, load Story Mode before starting its trainer."
+msgstr "Your PC is connected. Choose a game from your library. For RDR2, load Story Mode before starting its trainer."

@@ -66,6 +66,7 @@ If recovery fails, retain `launcher.log` and `launcher.prev.log` from the Wand r
 - Cover preparation failures with the patch rollback path and prevent overlapping operations.
 - Show detected Wand version, support-file health, recovery guidance and a Rescan action.
 - Make the remote panel mobile first: larger text and touch targets, full-width phone drawers, persistent labelled navigation, safe-area spacing and clearer connection states.
+- Refresh and strictly compile translation catalogs during builds; untranslated new labels fall back to readable English.
 - Include a build identity manifest in the GitHub Actions artifact.
 
 These safeguards reduce known failure modes. They cannot guarantee compatibility with every future Wand update, disk failure, locked file or game trainer.
