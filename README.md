@@ -4,7 +4,7 @@
 
 A Windows companion for Wand, with a phone-friendly remote panel. This is [AshabaJasper's fork](https://github.com/AshabaJasper/Wand-Enhancer) of [k1tbyte/Wand-Enhancer](https://github.com/k1tbyte/Wand-Enhancer).
 
-**Enhancer 2.1.2.0 · Wand 12.62.0 stable compatibility.** The previous build was verified on this Wand version with the normal library and five games syncing to the remote panel. This edition adds safer support-file replacement, a mobile-first interface, and PWA support. [Compatibility evidence and test limits](docs/wand-12.62.0-compatibility.md).
+**Enhancer 2.1.3.0 · Wand 12.63.0 trainer compatibility repair.** This build adds the newer auxiliary archive and fuse checks to the existing patch pipeline, retaining the mobile panel, PWA and phone helper. Build and patch tests passed, and the update was applied locally with Wand and its remote panel opening successfully. In-game verification is reserved for the user's test. [Repair evidence and test limits](docs/trainer-launch-repair.md).
 
 ## Get your build
 
@@ -15,7 +15,7 @@ The separate [Wand Phone Helper](PhoneHelper/README.md) provides the actual LAN 
 Build the helper using PhoneHelper/build.ps1, or use the **Build Phone Helper** workflow on the **helpers/phone-setup** branch. The helper's own version is 1.0.0.0. Its manifest records the exact source revision and file hash.
 
 1. Open [Actions → Build executable](https://github.com/AshabaJasper/Wand-Enhancer/actions/workflows/build.yml). To build independently, fork this repository first.
-2. Choose **Run workflow**, select **master**, and leave release checks off for the default offline patcher.
+2. Choose **Run workflow**, select **fix/trainer-launch-12-63** for this repair, and leave release checks off for the default offline patcher.
 3. Open the successful run and download **WandEnhancer-unsigned** under Artifacts. GitHub requires sign-in to download artifacts.
 4. Extract the ZIP. Keep `WandEnhancer.exe` and `build-info.json` together.
 
