@@ -314,6 +314,8 @@ function Invoke-GamingSetup([bool]$ReadOnly) {
         $powershell = Join-Path $env:SystemRoot 'System32\WindowsPowerShell\v1.0\powershell.exe'
         $arguments = '-NoProfile -ExecutionPolicy Bypass -File "{0}" -Mode AdminWorker -TargetSid "{1}" -TargetSession {2} -RunId {3}' -f $workerScript,$account.Sid,$session,$id
         $worker=Start-Process -FilePath $powershell -ArgumentList $arguments -Verb RunAs -WindowStyle Hidden -PassThru
+        # Retain the process handle so Windows PowerShell 5.1 can read ExitCode after exit.
+        $null=$worker.Handle
         if (-not $worker.WaitForExit(900000)) { throw 'The administrator patch is still running. Do not start another copy; check the run log before retrying.' }
         $resultPath=Join-Path $run 'admin-result.json'
         if (-not(Test-Path -LiteralPath $resultPath)) { throw 'Administrator step did not report a result. UAC may have been cancelled; no success is assumed.' }
