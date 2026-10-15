@@ -1,0 +1,25 @@
+WAND ENHANCER - GUIDED GAMING SETUP
+
+1. Save/close your game and exit Wand/Enhancer in Ashaba, including tray icons.
+2. Sign into the Gaming Windows account.
+3. In File Explorer, open:
+   C:\Users\Public\Documents\Wand Gaming Setup 2.1.3
+4. Double-click START-HERE.cmd normally. Do NOT choose Run as administrator.
+   The script requests administrator permission automatically at step 4.
+5. Follow its numbered steps. Enter any admin password only in Windows UAC.
+   Sign into Wand privately when requested, then test your game yourself.
+
+Using a ZIP? Extract the entire ZIP first and keep its files together.
+
+The wizard checks files, installs Wand if absent, verifies originals/backups,
+applies Enhancer 2.1.3, creates shortcuts and checks startup/remote connectivity.
+It targets Gaming even if UAC uses Ashaba's administrator credentials.
+It supports Wand 12.63.0 only. If it stops, read the error and keep the backups.
+No game is launched, no game/save folders are moved, and no login data is copied.
+The Phone Helper is optional and separate; the remote panel is included.
+
+Logs in Gaming: %LOCALAPPDATA%\WandEnhancerSetup\runs
+Undo: close games/Wand, open Wand Enhancer (repaired), choose Restore.
+
+Automated script checks passed; the interactive Gaming run and game test
+remain pending. A successful setup message does not prove a trainer works.

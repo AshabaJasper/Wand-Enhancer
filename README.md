@@ -44,6 +44,18 @@ A newer Wand version is not automatically compatible. If a compatibility check f
 
 The **Windows account** and the **Wand login** are different things. Using the same Wand login in both Windows accounts does not transfer the installed patch.
 
+### Guided administrator setup for Gaming
+
+On this PC, open `C:\Users\Public\Documents\Wand Gaming Setup 2.1.3` from **Gaming's File Explorer** and double-click **START-HERE.cmd**. Start it normally: the script requests administrator permission at the patch step. If Windows asks for another account's administrator credentials, enter them only in the Windows prompt; the patch target remains Gaming.
+
+The guided sequence checks the account and file hashes, opens the official installer if Wand is missing, asks you to close Wand in all sessions, installs the repaired enhancer, verifies original resources/backups, applies the repair with administrator permission, creates Gaming's shortcuts, opens Wand as Gaming, and checks startup plus the selected remote panel. It never launches a game. You handle installer prompts, Windows approval, Wand sign-in and the final game test.
+
+This kit accepts **Wand 12.63.0 only** and stops on another version, missing/damaged originals, custom renderer scripts or running Wand processes. An online installer may fetch a newer version; the script will stop for a compatibility check rather than patch it. Existing supported selections are kept with Static mode; a fresh setup uses Pro, F12 diagnostics and Remote Web Panel. Logs and any previous enhancer executable are saved under `%LOCALAPPDATA%\WandEnhancerSetup\runs` in Gaming. Original Wand backups stay beside the installation for **Restore**.
+
+The [setup source and verification notes](https://github.com/AshabaJasper/Wand-Enhancer/tree/fix/trainer-launch-12-63/scripts/windows-gaming-setup) explain the pinned kit and tests. The repository scripts alone are not a complete installer kit. **Gaming's interactive setup and gameplay remain unverified until run in that account.** The optional Phone Helper remains a separate installation.
+
+### Manual setup or another Windows account
+
 - Transfer only the enhancer executable and build manifest through a shared folder, then copy them into a folder owned by Gaming.
 - Sign into Gaming and follow the setup steps above. The detected installation should belong to Gaming, for example `C:\Users\Gaming\AppData\Local\Wand\app-12.63.0`.
 - If detection points elsewhere, use **Browse…** to select Gaming's versioned Wand folder. If none exists, install official Wand while signed into Gaming first.
