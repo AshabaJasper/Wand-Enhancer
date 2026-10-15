@@ -1,121 +1,107 @@
-# Wand Enhancer · personal edition
+# Wand Enhancer — personal edition
 
-![Four steps from desktop setup to phone controls](docs/images/quick-start.svg)
+A Windows companion that modifies a local Wand (formerly WeMod) installation and adds a phone-friendly remote panel. This is [AshabaJasper's fork](https://github.com/AshabaJasper/Wand-Enhancer) of [k1tbyte/Wand-Enhancer](https://github.com/k1tbyte/Wand-Enhancer), not an official Wand product.
 
-A Windows companion for Wand, with a phone-friendly remote panel. This is [AshabaJasper's fork](https://github.com/AshabaJasper/Wand-Enhancer) of [k1tbyte/Wand-Enhancer](https://github.com/k1tbyte/Wand-Enhancer).
+## Start here
 
-**Enhancer 2.1.3.0 · Wand 12.63.0 trainer compatibility repair.** This build adds the newer auxiliary archive and fuse checks to the existing patch pipeline, retaining the mobile panel, PWA and phone helper. Build and patch tests passed, and the update was applied locally with Wand and its remote panel opening successfully. In-game verification is reserved for the user's test. [Repair evidence and test limits](docs/trainer-launch-repair.md).
+**Latest repair: Enhancer 2.1.3.0 for Wand 12.63.0.** Use the [repair branch](https://github.com/AshabaJasper/Wand-Enhancer/tree/fix/trainer-launch-12-63) and its [successful build](https://github.com/AshabaJasper/Wand-Enhancer/actions/runs/38666405156). The default `master` source has not yet received this repair; building `master` produces the older version.
 
-## Get your build
-
-### Phone connection and video-guide companion
-
-The separate [Wand Phone Helper](PhoneHelper/README.md) provides the actual LAN address, an offline QR code, copy/open controls, a local-only firewall repair and public gameplay video search. Its per-user installer packages only these helper tools. It does not rebuild or embed the patcher. The Phone setup button is added to the desktop source; the currently installed Enhancer 2.1.2 executable remains unchanged.
-
-Build the helper using PhoneHelper/build.ps1, or use the **Build Phone Helper** workflow on the **helpers/phone-setup** branch. The helper's own version is 1.0.0.0. Its manifest records the exact source revision and file hash.
-
-1. Open [Actions → Build executable](https://github.com/AshabaJasper/Wand-Enhancer/actions/workflows/build.yml). To build independently, fork this repository first.
-2. Choose **Run workflow**, select **fix/trainer-launch-12-63** for this repair, and leave release checks off for the default offline patcher.
-3. Open the successful run and download **WandEnhancer-unsigned** under Artifacts. GitHub requires sign-in to download artifacts.
-4. Extract the ZIP. Keep `WandEnhancer.exe` and `build-info.json` together.
-
-The manifest records the source commit, executable version, SHA-256 and build link. The desktop header also shows the version and build. Use these to distinguish builds with the same version number. This fork does not distribute executables through video descriptions or third-party mirrors.
-
-## Set up on your PC
-
-1. Save your game and close it before changing Wand files.
-2. Open `WandEnhancer.exe`. Check the detected **Wand version**; use **Rescan** after a Wand update, or select the installation folder yourself.
-3. Read the support-file status. Choose **Choose changes…**, review the options, enable **Remote Web Panel**, and use **Static** for the configuration tested here.
-4. Wait for the log to report completion. Open Wand and confirm your normal library loads.
-
-Original archive and support-file backups are kept beside the installation. Keep them: **Restore** uses both. Only one Enhancer patch/restore operation may run for an installation at a time.
-
-## Use your phone
-
-1. Keep Wand open on the PC. Connect the phone and PC to the **same trusted Wi-Fi**.
-2. Use the desktop **Connect** QR code, or open `http://YOUR-PC-LAN-IP:3223/remote/` on the phone. `127.0.0.1` only works on the PC itself.
-3. Wait for **Connected**, then tap **Library** in the bottom navigation. Search your installed games and choose one.
-4. Use **Settings** to reconnect or adjust the panel. Settings and Library stay reachable while scrolling; drawers fill narrow screens and controls are at least 44 pixels tall on phones.
-
-For RDR2, load Story Mode before attempting a trainer. A connected library is **not** evidence of working gameplay: the earlier RDR2 trainer exit has not been resolved or retested.
-
-The remote panel uses HTTP/WebSockets and has no pairing authentication. Anyone who can reach its port can control the active trainer. Keep it on a trusted LAN/private VPN; do not forward port 3223 to the internet. The panel does not expose your Wand bearer token or installation path through its protocol.
-
-## Install on your phone (PWA)
-
-PWA support is included in **2.1.2.0**. Open **Settings → Keep Wand on your home screen** for installation status and instructions.
-
-**A trusted HTTPS address is required on a phone.** The current plain-HTTP LAN address remains a browser controller; private HTTPS setup has deliberately been left for later. The localhost exception applies only on the PC itself. No public tunnel, certificate bypass or network exposure is configured by this build.
-
-Once private HTTPS is available:
-
-1. Open that HTTPS `/remote/` address on your phone while Wand is running.
-2. **Android:** tap **Install Wand Remote** if offered, or use the browser menu → **Install app / Add to Home screen**.
-3. **iPhone:** open in Safari, use **Share → Add to Home Screen**, and enable **Open as Web App** if offered.
-4. Launch **Wand Remote** from the home screen. Keep the PC on and reachable over the same trusted network/private VPN.
-
-The service worker caches only the interface, icons and language files. It does **not** cache trainer state, API responses, commands, account data or external game artwork. Offline, the interface opens with connection recovery guidance; it cannot operate a game. New interface versions wait until existing tabs close or you choose **Reload updated panel** in Settings. Refreshing the page also checks for a new worker.
-
-See [MDN's installation requirements](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/Guides/Making_PWAs_installable). Phone installation and private HTTPS are not claimed as tested here.
-## After Wand updates
-
-![Recovery flow: rescan, check support files, reapply, then verify both libraries](docs/images/update-recovery.svg)
-
-1. Let Wand finish updating, then close games before reapplying.
-2. Open the latest Enhancer build and click **Rescan**. Check the newly selected Wand version.
-3. If the launcher still has **Auto-apply after update** enabled, it attempts your saved selection when needed. Vendor updates can replace that launcher; automatic application is not guaranteed.
-4. If changes are missing or the loading error returns, reapply to the newly detected version. Review the option selection before applying.
-5. Open Wand, confirm its library loads, and reconnect the phone panel.
-
-A future Wand release can change internals beyond this build's locators. A failed compatibility check should be treated as unsupported until investigated, not bypassed.
-
-### Recovery messages
-
-| What you see | What to do |
+| Status | Meaning |
 | --- | --- |
-| Recovery needed / previous change did not finish | Close games and Wand. Reapply, or use Restore to return to the original files. |
-| Support files missing or wrong size | Preserve both backups. Restore a complete original installation or repair/reinstall Wand if the backups are also damaged. |
-| Could not replace support files safely | A file may be locked. Close Wand and games, then retry. The prepared replacement is copied before the live directory is moved. |
-| Another operation may be running | Wait for the current patch/restore to finish; do not run two copies against the same installation. |
-| Phone cannot load the page | Check the LAN address, same network and router client isolation. Review the existing private-network firewall rule for TCP 3223; do not disable antivirus or firewall protection. |
-| Panel shows Offline | Keep Wand open, check its normal library first, then use Settings → Connect. |
+| Build and automated checks passed | Includes 53 web tests, desktop backup/rollback checks, JavaScript patch locations and auxiliary-service checks. |
+| Applied to Wand 12.63.0 | Wand and the remote panel opened; original files remain available for Restore. |
+| Game test pending | The user will test their game. An open library or connected phone does not prove that a trainer works. |
+| Other Windows accounts need setup | Each account has its own Wand installation and profile. Repairing one does not repair the others. |
 
-If recovery fails, retain `launcher.log` and `launcher.prev.log` from the Wand root and export the desktop log. Redact account information and personal paths before sharing. Include Wand version, Enhancer build, selected options, and whether this followed an update.
+The repair handles newer auxiliary archive and Electron fuse checks missing from the older enhancer. [Technical evidence and limits](https://github.com/AshabaJasper/Wand-Enhancer/blob/fix/trainer-launch-12-63/docs/trainer-launch-repair.md).
 
-## What changed in 2.1.1
+## 1. Get the repaired enhancer
 
-- Prepare support files in a separate folder before swapping them into place; recover an interrupted directory swap on retry.
-- Cover preparation failures with the patch rollback path and prevent overlapping operations.
-- Show detected Wand version, support-file health, recovery guidance and a Rescan action.
-- Make the remote panel mobile first: larger text and touch targets, full-width phone drawers, persistent labelled navigation, safe-area spacing and clearer connection states.
-- Refresh and strictly compile translation catalogs during builds; untranslated new labels fall back to readable English.
-- Include a build identity manifest in the GitHub Actions artifact.
+1. Open the [verified build run](https://github.com/AshabaJasper/Wand-Enhancer/actions/runs/38666405156).
+2. Download **WandEnhancer-unsigned** under **Artifacts**. GitHub sign-in is required.
+3. Extract the ZIP to a folder you will keep. Keep `WandEnhancer.exe` and `build-info.json` together.
+4. Open the enhancer. This specific build shows **2.1.3.0 · 5b75213** in its header.
 
-These safeguards reduce known failure modes. They cannot guarantee compatibility with every future Wand update, disk failure, locked file or game trainer.
+The manifest records version, source commit, SHA-256 and build URL. This build is unsigned; use the repository's build artifact, not executables from video descriptions or third-party mirrors.
 
-## Build and test locally
+If the artifact has expired, open [Actions → Build executable](https://github.com/AshabaJasper/Wand-Enhancer/actions/workflows/build.yml), choose **Run workflow**, select **fix/trainer-launch-12-63**, and leave update notifications off for the default offline patcher. A new build has its own manifest and commit identity.
 
-Requirements: Windows, Node.js, pnpm, Visual Studio 2022/Build Tools with MSBuild, and .NET Framework 4.8 desktop targeting tools.
+## 2. Apply it in the account where you play
+
+1. Sign into the correct Windows account. Save and close games, and exit Wand in any other signed-in Windows session.
+2. Install or open [official Wand](https://wand.com/download) in this account and sign in privately. Then close Wand.
+3. Open `WandEnhancer.exe` from File Explorer in the same account. Use **Rescan** if needed.
+4. Confirm the detected folder belongs to **this account**, normally `%LOCALAPPDATA%\Wand\app-<version>`. Check the version: this repair was validated against **12.63.0**.
+5. Choose **Choose changes…**, review your options, use **Static** for the tested configuration, and enable **Remote Web Panel** if you want phone controls.
+6. Apply and wait for **Changes applied** and **Support files verified. Original backup available.**
+7. Open Wand and test your game. For RDR2, load Story Mode before trying the trainer.
+
+A newer Wand version is not automatically compatible. If a compatibility check fails, stop and investigate rather than bypassing it.
+
+**Keep the backups.** Restore needs `resources/app.asar.backup`, `resources/app.asar.unpacked.backup` and the launcher/executable backups created by the enhancer. Run only one patch or restore operation at a time.
+
+## Separate Gaming Windows account
+
+The **Windows account** and the **Wand login** are different things. Using the same Wand login in both Windows accounts does not transfer the installed patch.
+
+- Transfer only the enhancer executable and build manifest through a shared folder, then copy them into a folder owned by Gaming.
+- Sign into Gaming and follow the setup steps above. The detected installation should belong to Gaming, for example `C:\Users\Gaming\AppData\Local\Wand\app-12.63.0`.
+- If detection points elsewhere, use **Browse…** to select Gaming's versioned Wand folder. If none exists, install official Wand while signed into Gaming first.
+- Do not copy another account's Wand profile, cookies, credentials or trainer cache. Each account keeps its own settings and backups.
+- Exit Wand in the other Windows session first. Two copies can compete for remote port `3223`, and the patcher stops Wand processes while applying changes.
+- Use Gaming's normal File Explorer to launch setup. Packaged applications can redirect app-data paths and cause setup to target a different location.
+
+Games on another drive may be shared, but Gaming needs access to them and Wand must detect them or be pointed to the correct executable. These steps do not move games or saves. Compatibility must be verified while signed into Gaming; success in another account is not proof.
+
+## Phone controls
+
+1. Keep patched Wand open in the Windows account you are using to play.
+2. Connect the PC and phone to the **same trusted local network**.
+3. Use **Connect** in Wand or open `http://YOUR-PC-LAN-IP:3223/remote/` on the phone. `127.0.0.1` works only on the PC.
+4. Wait for **Connected**, open **Library** and select a game.
+
+The optional [Wand Phone Helper](https://github.com/AshabaJasper/Wand-Enhancer/blob/fix/trainer-launch-12-63/PhoneHelper/README.md) provides a LAN address, QR code, connection checks and public video-guide search. Install it separately in each Windows account where you need it. Enhancer 2.1.3 includes the **Phone setup** button but does not bundle the helper installer.
+
+The panel uses HTTP/WebSockets without pairing authentication. Anyone who can reach its port can control the active trainer. Keep it on a trusted LAN/private VPN; do not forward port `3223` to the internet or disable the firewall to connect.
+
+### Phone home-screen installation
+
+Open **Settings → Keep Wand on your home screen** for instructions. Full PWA installation on a phone requires trusted HTTPS. The ordinary HTTP LAN link remains a browser controller. Private HTTPS and phone installation have not been verified here.
+
+Offline mode caches the interface only, not accounts, trainer state or commands. It cannot control games while disconnected.
+
+## Updates, errors and Restore
+
+After a Wand update, let it finish, close games, open the enhancer and choose **Rescan**. Check the detected version before applying. **Auto-apply after update** attempts your saved selection only while the enhancer launcher remains installed; Wand updates can replace it.
+
+| Problem | Next step |
+| --- | --- |
+| Games appear, but trainers will not start | Check enhancer version/build and Windows account path. Use the repair on the validated Wand version; retain the exact error if it continues. |
+| Recovery needed / unfinished operation | Close games and Wand. Keep backups, then retry or use **Restore**. |
+| Support files missing or wrong size | Restore complete original files. If backups are damaged, repair/reinstall official Wand in that Windows account. |
+| File replacement fails | Close the game or Wand that may hold the file open, then retry. Do not delete backups. |
+| Another operation may be running | Wait for it to finish; do not start another patch or restore. |
+| Phone cannot connect | Check current LAN address, network isolation and the local firewall rule. Run Wand in one Windows session. |
+| You want to undo changes | Close games and Wand, open the enhancer for the same installation and choose **Restore**. |
+
+For troubleshooting, retain `launcher.log` and `launcher.prev.log` beside Wand's launcher and use **Export logs** in the enhancer. Include Wand version, enhancer version/build, Windows account context, selected options and exact game error. Redact personal paths and account details; never include passwords or verification codes.
+
+## Build from source
+
+Check out **fix/trainer-launch-12-63** for this repair. Requirements: Windows, Node.js, pnpm, Visual Studio/Build Tools with MSBuild, and .NET Framework 4.8 desktop targeting tools.
 
 ```powershell
 ./build.cmd
 ```
 
-The build lints and type-checks the web panel, builds production assets, runs web tests, builds WPF, and exercises desktop/patch-locator fixtures. Fixtures use temporary directories. For web development:
+The build lints and type-checks the panel, builds production assets, runs web tests, builds WPF, and runs desktop, patch-locator and auxiliary-compatibility tests. Fixtures use temporary directories.
 
-```powershell
-pnpm --dir web-panel install --frozen-lockfile
-pnpm --dir web-panel dev
-```
+`build.cmd -EnableUpdateNotifications` enables optional GitHub release notifications. Default builds exclude that code. Notifications do not download or install updates. Wand itself still uses online services.
 
-The development page connects to the running local bridge on port 3223. Production output contains no demo trainer. [UI acceptance and remaining limits](docs/ui-acceptance.md).
+For panel development, run `pnpm --dir web-panel install --frozen-lockfile`, then `pnpm --dir web-panel dev`. Production output excludes demo trainers. [UI acceptance and remaining limits](docs/ui-acceptance.md).
 
-`build.cmd -EnableUpdateNotifications` compiles optional GitHub release notifications. Default builds exclude that network code. The optional variant sends ordinary GitHub API request metadata and opens release notes; it does not download or install updates. Wand itself is online; the remote panel uses Wand API/CDN data for artwork/translations. Browser preferences and pins are stored locally.
+Custom renderer scripts run inside Wand with Node access. Add only scripts you understand through the patch dialog or the `renderer-scripts` folder beside the enhancer; they may execute more than once.
 
-## Custom scripts
+## Credits
 
-With Remote Web Panel enabled, add trusted `.js` files in the patch dialog or a `renderer-scripts` folder beside the executable. They run inside Wand's renderer with Node access and may run more than once; guard one-time setup. Do not add scripts you do not understand.
-
-## Credits and license
-
-Original project by [k1tbyte](https://github.com/k1tbyte/Wand-Enhancer). Personal usability and recovery changes maintained in this fork. [Apache-2.0 license](LICENSE.md). This is an independent project, not an official Wand product.
+Original project: [k1tbyte/Wand-Enhancer](https://github.com/k1tbyte/Wand-Enhancer). Trainer compatibility repair adapted from [RatedRCustomer's PR #345](https://github.com/k1tbyte/Wand-Enhancer/pull/345). Personal usability, recovery and phone tools are maintained in this fork. [Apache-2.0 license](LICENSE.md).
