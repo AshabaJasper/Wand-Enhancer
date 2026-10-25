@@ -122,5 +122,9 @@ Invoke-Step 'Test auxiliary client compatibility' {
     & (Join-Path $repoRoot 'scripts\test-auxiliary-integrity.ps1') -AssemblyPath $assemblyPath
 }
 
+Invoke-Step 'Test process shutdown and executable file locks' {
+    & (Join-Path $repoRoot 'scripts\test-file-locks.ps1') -AssemblyPath $assemblyPath
+}
+
 Write-Host ''
 Write-Host "Build completed successfully ($Configuration)." -ForegroundColor Green

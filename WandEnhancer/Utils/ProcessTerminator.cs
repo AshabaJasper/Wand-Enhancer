@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Threading;
 
 namespace WandEnhancer.Utils
@@ -14,10 +15,41 @@ namespace WandEnhancer.Utils
         {
             // The launcher itself runs as Wand.exe; never target our own process.
             int selfId = Process.GetCurrentProcess().Id;
+            KillUntilGone(processName, () => Others(Process.GetProcessesByName(processName), selfId));
+        }
+
+        // Adapted from upstream PR #359; scope shutdown to this installation,
+        // and never interrupt an installer that may be replacing its files.
+        public static void TryKillProcessesUnder(string directory)
+        {
+            int selfId = Process.GetCurrentProcess().Id;
+            string prefix = Path.GetFullPath(directory).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)
+                + Path.DirectorySeparatorChar;
+            KillUntilGone("Wand installation helpers", () => Under(prefix, selfId));
+        }
+
+        private static Process[] Under(string prefix, int selfId)
+        {
+            var result = new List<Process>();
+            foreach (var process in Process.GetProcesses())
+            {
+                bool selected = false;
+                try
+                {
+                    selected = process.Id != selfId && process.MainModule.FileName.StartsWith(prefix, StringComparison.OrdinalIgnoreCase);
+                }
+                catch (Exception e) when (e is InvalidOperationException || e is System.ComponentModel.Win32Exception || e is NotSupportedException) { }
+                if (selected) result.Add(process); else process.Dispose();
+            }
+            return result.ToArray();
+        }
+
+        private static void KillUntilGone(string target, Func<Process[]> find)
+        {
 
             for (int attempt = 0; attempt < KillAttempts; attempt++)
             {
-                var processes = Others(Process.GetProcessesByName(processName), selfId);
+                var processes = find();
                 try
                 {
                     if (processes.Length == 0)
@@ -25,11 +57,19 @@ namespace WandEnhancer.Utils
                         return;
                     }
 
+                    // Check the whole set before stopping anything.
+                    foreach (var process in processes)
+                    {
+                        if (string.Equals(process.ProcessName, "Update", StringComparison.OrdinalIgnoreCase) ||
+                            string.Equals(process.ProcessName, "squirrel", StringComparison.OrdinalIgnoreCase))
+                            throw new InvalidOperationException("Wand is updating (" + process.ProcessName + ", PID " + process.Id + "). Wait for the update to finish, then retry.");
+                    }
                     foreach (var process in processes)
                     {
                         try
                         {
                             process.Kill();
+                            process.WaitForExit(KillRetryDelayMs);
                         }
                         catch (Exception e) when (e is InvalidOperationException || e is System.ComponentModel.Win32Exception)
                         {
@@ -48,12 +88,14 @@ namespace WandEnhancer.Utils
                 Thread.Sleep(KillRetryDelayMs);
             }
 
-            var survivors = Others(Process.GetProcessesByName(processName), selfId);
+            var survivors = find();
             try
             {
                 if (survivors.Length > 0)
                 {
-                    throw new InvalidOperationException($"Failed to close {processName}. Close it manually and try again.");
+                    var names = new List<string>();
+                    foreach (var process in survivors) names.Add(process.ProcessName + " (PID " + process.Id + ")");
+                    throw new InvalidOperationException($"Failed to close {target}: {string.Join(", ", names)}. Close these processes and retry. An elevated process may require an administrator.");
                 }
             }
             finally

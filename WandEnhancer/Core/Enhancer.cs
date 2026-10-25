@@ -126,7 +126,9 @@ namespace WandEnhancer.Core
             ValidateUnpackedFiles(
                 File.Exists(_backupPath) ? _backupPath : _asarPath,
                 Directory.Exists(_unpackedBackupPath) ? _unpackedBackupPath : _unpackedPath);
-            ProcessTerminator.TryKillProcess(_weModConfig.BrandName);
+            ProcessTerminator.TryKillProcessesUnder(SquirrelRoot);
+            if (_config.Strategy == EPatchStrategy.Static && File.Exists(_weModConfig.ExecutablePath))
+                DiskFusePatch.VerifyWritable(_weModConfig.ExecutablePath);
             string markerPath = Path.Combine(Path.GetDirectoryName(_asarPath), IncompletePatchMarkerFileName);
             File.WriteAllText(markerPath, string.Empty);
 
@@ -421,7 +423,9 @@ namespace WandEnhancer.Core
                 throw new Exception("[ENHANCER] Backup is incomplete. Restore the original Wand installation files or reinstall Wand.");
             }
 
-            ProcessTerminator.TryKillProcess(_weModConfig.BrandName);
+            ProcessTerminator.TryKillProcessesUnder(SquirrelRoot);
+            if (File.Exists(_weModConfig.ExecutablePath + ".fusebak"))
+                DiskFusePatch.VerifyWritable(_weModConfig.ExecutablePath);
             AsarSharp.Utils.Extensions.CopyOver(_backupPath, _asarPath);
 
             ReplaceSupportDirectory(_unpackedBackupPath, _unpackedPath);

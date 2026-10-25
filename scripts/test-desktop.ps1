@@ -149,6 +149,22 @@ try {
     Assert-Equal (Test-Path -LiteralPath $marker) $false 'Preflight leaves no patch marker'
     Assert-Equal ((Get-FileHash -LiteralPath $asar -Algorithm SHA256).Hash) $archiveBefore 'Preflight preserves archive'
     Assert-Equal ([IO.File]::ReadAllText((Join-Path $unpacked $nativeRelative))) $nativeExpected 'Preflight preserves signed support files'
+    $backupNative=Join-Path $unpackedBackup $nativeRelative
+    [IO.Directory]::CreateDirectory([IO.Path]::GetDirectoryName($backupNative)) | Out-Null
+    [IO.File]::WriteAllText($backupNative,$nativeExpected)
+    [IO.File]::WriteAllText($config.ExecutablePath,'client fixture')
+    $patchConfig=[Activator]::CreateInstance($assembly.GetType('WandEnhancer.Models.PatchConfig',$true))
+    $patchConfig.Strategy=[Enum]::ToObject($assembly.GetType('WandEnhancer.Models.EPatchStrategy',$true),1)
+    $patcher=[Activator]::CreateInstance($enhancerType,@($config,$logger,$patchConfig))
+    $clientLock=[IO.File]::Open($config.ExecutablePath,'Open','Read','Read')
+    try {
+        $failed=$false
+        try{$enhancerType.GetMethod('Patch').Invoke($patcher,$null)|Out-Null}catch{$failed=$_.Exception.ToString().Contains('executable is still locked')}
+        Assert-Equal $failed $true 'Locked executable rejects patch before mutation'
+        Assert-Equal (Test-Path -LiteralPath $marker) $false 'Locked executable leaves no incomplete marker'
+        Assert-Equal ((Get-FileHash -LiteralPath $asar).Hash) $archiveBefore 'Locked executable preserves archive'
+        Assert-Equal ([IO.File]::ReadAllText($backupNative)) $nativeExpected 'Locked executable preserves original support backup'
+    }finally{$clientLock.Dispose()}
     [IO.File]::WriteAllText((Join-Path $unpacked $nativeRelative), 'short')
     $rejected = $false
     try { $validate.Invoke($null, $validateArguments) | Out-Null }

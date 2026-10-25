@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Threading;
 
 namespace WandEnhancer.Core.Patching.Shared
 {
@@ -10,6 +11,27 @@ namespace WandEnhancer.Core.Patching.Shared
     {
         private const string FuseBackupSuffix = ".fusebak";
 
+        // Fail before changing resources if the client image is still mapped.
+        public static void VerifyWritable(string exePath)
+        {
+            using (OpenWritable(exePath)) { }
+        }
+
+        private static FileStream OpenWritable(string exePath)
+        {
+            for (int attempt = 0; ; attempt++)
+            {
+                try { return new FileStream(exePath, FileMode.Open, FileAccess.ReadWrite, FileShare.Read); }
+                catch (IOException e) when ((e.HResult & 0xffff) == 32 || (e.HResult & 0xffff) == 33)
+                {
+                    if (attempt >= 11)
+                        throw new IOException("Wand executable is still locked: " + exePath +
+                            ". Close Wand, games using its overlay and installation helpers, then retry. Original backups are retained.", e);
+                    Thread.Sleep(250);
+                }
+            }
+        }
+
         public static bool Apply(string exePath, Action<string, ELogType> log)
         {
             long offset = ElectronFuseWire.FindStateFileOffset(exePath);
@@ -19,7 +41,7 @@ namespace WandEnhancer.Core.Patching.Shared
                 return false;
             }
 
-            using (var stream = new FileStream(exePath, FileMode.Open, FileAccess.ReadWrite, FileShare.Read))
+            using (var stream = OpenWritable(exePath))
             {
                 stream.Position = offset;
                 int original = stream.ReadByte();
@@ -59,7 +81,7 @@ namespace WandEnhancer.Core.Patching.Shared
             }
 
             byte original = File.ReadAllBytes(backup)[0];
-            using (var stream = new FileStream(exePath, FileMode.Open, FileAccess.ReadWrite, FileShare.Read))
+            using (var stream = OpenWritable(exePath))
             {
                 stream.Position = offset;
                 stream.WriteByte(original);
