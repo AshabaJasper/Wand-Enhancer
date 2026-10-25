@@ -17,8 +17,8 @@ The executable is unsigned. Its manifest identifies the source commit and SHA-25
 
 | Version | Verification |
 | --- | --- |
-| **2.1.5 — current source/build** | Upstream sync, personal UI retained, optional update watcher and additional installer-safety checks. See [build results](https://github.com/AshabaJasper/Wand-Enhancer/actions/runs/40147175184). |
-| **2.1.4 — last tested on the actual PC** | Wand **12.66.0** patching, reapplying while running, startup and remote connectivity passed. [Build](https://github.com/AshabaJasper/Wand-Enhancer/actions/runs/40146135380) · [Evidence](docs/wand-12.66-file-lock-repair.md). |
+| **2.1.5 — current build, tested on the actual PC** | Applied to Wand **12.66.0** on 25 October 2026. Both apps reopened and responded; backup status, remote health, running watcher and Windows sign-in registration passed. [Build](https://github.com/AshabaJasper/Wand-Enhancer/actions/runs/40147175184) · [Evidence and limits](docs/upstream-sync-2026-10-25.md#verification-and-limits). |
+| **2.1.4 — previous repair** | Wand **12.66.0** patching, reapplying while running, startup and remote connectivity passed. [Build](https://github.com/AshabaJasper/Wand-Enhancer/actions/runs/40146135380) · [Evidence](docs/wand-12.66-file-lock-repair.md). |
 
 A build or connected remote panel does not prove that a trainer works in a game. Gameplay testing remains separate. Newer Wand versions need fresh compatibility checks.
 
