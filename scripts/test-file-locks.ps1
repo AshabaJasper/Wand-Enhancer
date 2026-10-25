@@ -46,28 +46,28 @@ class Holder {
     $otherFile=Join-Path $outside 'data';[IO.File]::WriteAllText($otherFile,'other account fixture')
     $initial=(Get-FileHash -LiteralPath $client).Hash
     $p=Start-Fixture $otherHelper $client 900
-    $verify.Invoke($null,@($client))|Out-Null
+    $verify.Invoke($null,[object[]]@([string]$client))|Out-Null
     Assert ((Get-FileHash -LiteralPath $client).Hash -eq $initial) 'Transient-lock check wrote the client'
     Write-Host 'PASS: transient executable lock is retried without changing bytes'
     $p.WaitForExit()
     $p=Start-Fixture $otherHelper $client 15000
     $failed=$false
-    try{$verify.Invoke($null,@($client))|Out-Null}catch{$failed=$_.Exception.ToString().Contains('executable is still locked')}
+    try{$verify.Invoke($null,[object[]]@([string]$client))|Out-Null}catch{$failed=$_.Exception.ToString().Contains('executable is still locked')}
     Assert $failed 'Persistent lock did not produce an actionable failure'
     Assert (-not $p.HasExited) 'File verification killed the outside process'
     $p.Kill();$p.WaitForExit()
     Write-Host 'PASS: persistent lock fails and preserves outside process and file'
     $inside=Start-Fixture $helper $client 20000
     $other=Start-Fixture $otherHelper $otherFile 20000
-    $terminate.Invoke($null,@($install))|Out-Null
+    $terminate.Invoke($null,[object[]]@([string]$install))|Out-Null
     Assert ($inside.WaitForExit(5000)) 'Auxiliary process under selected install survived'
     Assert (-not $other.HasExited) 'Sibling/other installation was terminated'
-    $verify.Invoke($null,@($client))|Out-Null
+    $verify.Invoke($null,[object[]]@([string]$client))|Out-Null
     Write-Host 'PASS: scoped shutdown releases auxiliary lock and preserves sibling installation'
     $updater=Join-Path $install 'Update.exe';Copy-Item -LiteralPath $helper -Destination $updater
     $p=Start-Fixture $updater $client 20000
     $failed=$false
-    try{$terminate.Invoke($null,@($install))|Out-Null}catch{$failed=$_.Exception.ToString().Contains('Wait for the update to finish')}
+    try{$terminate.Invoke($null,[object[]]@([string]$install))|Out-Null}catch{$failed=$_.Exception.ToString().Contains('Wait for the update to finish')}
     Assert ($failed -and -not $p.HasExited) 'Active installer was interrupted or not reported'
     Write-Host 'PASS: active installer blocks patching and remains running'
 }finally{
