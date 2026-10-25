@@ -31,7 +31,7 @@ The project consists of the following main components:
 
 1. Clone the repository:
    ```
-   git clone https://github.com/k1tbyte/Wand-Enhancer.git
+   git clone https://github.com/AshabaJasper/Wand-Enhancer.git
    ```
 
 2. Open the solution `Wand-Enhancer.sln` in Visual Studio or JetBrains Rider.
@@ -42,7 +42,7 @@ The project consists of the following main components:
 
 ## Bug Reports
 
-If you've found a bug, please create an Issue with a detailed description:
+If you've found a bug in this fork, use the [bug-report template in the respawn guide](docs/RESPAWN-GUIDE.md#send-a-useful-bug-report) and create an [issue here](https://github.com/AshabaJasper/Wand-Enhancer/issues). Include:
 
 - WandEnhancer version
 - WeMod version where the problem occurred
@@ -79,7 +79,7 @@ Suggestions for new features or improvements are welcome! Create an Issue descri
    git push origin your-branch-name
    ```
 
-6. Create a Pull Request to the main repository.
+6. Create a pull request targeting `master` in `AshabaJasper/Wand-Enhancer` for changes to this fork. Keep the original project's contribution process separate.
 
 7. In the Pull Request description, explain the changes made and why they're necessary.
 
