@@ -4,12 +4,12 @@ A Windows companion that modifies a local Wand (formerly WeMod) installation and
 
 ## Start here
 
-**Latest repair: Enhancer 2.1.3.0 for Wand 12.63.0.** Use the [repair branch](https://github.com/AshabaJasper/Wand-Enhancer/tree/fix/trainer-launch-12-63) and its [successful build](https://github.com/AshabaJasper/Wand-Enhancer/actions/runs/38666405156). The default `master` source has not yet received this repair; building `master` produces the older version.
+**Latest repair: Enhancer 2.1.4.0 for Wand 12.66.0.** The default `master` source includes the trainer compatibility and executable-lock repairs. Download the artifact from the [2.1.4 build](https://github.com/AshabaJasper/Wand-Enhancer/actions/runs/40146135380). [Repair details and verification](docs/wand-12.66-file-lock-repair.md).
 
 | Status | Meaning |
 | --- | --- |
 | Build and automated checks passed | Includes 53 web tests, desktop backup/rollback checks, JavaScript patch locations and auxiliary-service checks. |
-| Applied to Wand 12.63.0 | Wand and the remote panel opened; original files remain available for Restore. |
+| Runtime verification | See the dated repair evidence for the installed version, backup checks and startup result. |
 | Game test pending | The user will test their game. An open library or connected phone does not prove that a trainer works. |
 | Other Windows accounts need setup | Each account has its own Wand installation and profile. Repairing one does not repair the others. |
 
@@ -17,21 +17,21 @@ The repair handles newer auxiliary archive and Electron fuse checks missing from
 
 ## 1. Get the repaired enhancer
 
-1. Open the [verified build run](https://github.com/AshabaJasper/Wand-Enhancer/actions/runs/38666405156).
+1. Open the [2.1.4 build run](https://github.com/AshabaJasper/Wand-Enhancer/actions/runs/40146135380).
 2. Download **WandEnhancer-unsigned** under **Artifacts**. GitHub sign-in is required.
 3. Extract the ZIP to a folder you will keep. Keep `WandEnhancer.exe` and `build-info.json` together.
-4. Open the enhancer. This specific build shows **2.1.3.0 · 5b75213** in its header.
+4. Open the enhancer. This specific build shows **2.1.4.0 · 08d13de** in its header.
 
 The manifest records version, source commit, SHA-256 and build URL. This build is unsigned; use the repository's build artifact, not executables from video descriptions or third-party mirrors.
 
-If the artifact has expired, open [Actions → Build executable](https://github.com/AshabaJasper/Wand-Enhancer/actions/workflows/build.yml), choose **Run workflow**, select **fix/trainer-launch-12-63**, and leave update notifications off for the default offline patcher. A new build has its own manifest and commit identity.
+If the artifact has expired, open [Actions → Build executable](https://github.com/AshabaJasper/Wand-Enhancer/actions/workflows/build.yml), choose **Run workflow**, select **master**, and leave update notifications off for the default offline patcher. A new build has its own manifest and commit identity.
 
 ## 2. Apply it in the account where you play
 
 1. Sign into the correct Windows account. Save and close games, and exit Wand in any other signed-in Windows session.
 2. Install or open [official Wand](https://wand.com/download) in this account and sign in privately. Then close Wand.
 3. Open `WandEnhancer.exe` from File Explorer in the same account. Use **Rescan** if needed.
-4. Confirm the detected folder belongs to **this account**, normally `%LOCALAPPDATA%\Wand\app-<version>`. Check the version: this repair was validated against **12.63.0**.
+4. Confirm the detected folder belongs to **this account**, normally `%LOCALAPPDATA%\Wand\app-<version>`. Check the version against the dated repair evidence. The current repair targets **12.66.0**.
 5. Choose **Choose changes…**, review your options, use **Static** for the tested configuration, and enable **Remote Web Panel** if you want phone controls.
 6. Apply and wait for **Changes applied** and **Support files verified. Original backup available.**
 7. Open Wand and test your game. For RDR2, load Story Mode before trying the trainer.
@@ -45,6 +45,8 @@ A newer Wand version is not automatically compatible. If a compatibility check f
 The **Windows account** and the **Wand login** are different things. Using the same Wand login in both Windows accounts does not transfer the installed patch.
 
 ### Guided administrator setup for Gaming
+
+**Legacy kit:** the shared 2.1.3 wizard below is pinned to Wand **12.63.0** and intentionally rejects 12.66.0. For 12.66.0, use the repaired **2.1.4** executable and the manual account-specific steps above. Gaming's runtime remains separately unverified.
 
 On this PC, open `C:\Users\Public\Documents\Wand Gaming Setup 2.1.3` from **Gaming's File Explorer** and double-click **START-HERE.cmd**. Start it normally: the script requests administrator permission at the patch step. If Windows asks for another account's administrator credentials, enter them only in the Windows prompt; the patch target remains Gaming.
 
@@ -86,12 +88,15 @@ Offline mode caches the interface only, not accounts, trainer state or commands.
 
 After a Wand update, let it finish, close games, open the enhancer and choose **Rescan**. Check the detected version before applying. **Auto-apply after update** attempts your saved selection only while the enhancer launcher remains installed; Wand updates can replace it.
 
+Version 2.1.4 stops client/helper processes only inside the selected Windows account's Wand installation and waits for their exit. It refuses to interrupt an active updater. Short executable-sharing locks are retried; persistent locks stop the patch before resource changes. If Wand or a game is running as administrator and cannot be closed, close it manually before retrying. This focused fork repair does not add the upstream background update watcher.
+
 | Problem | Next step |
 | --- | --- |
 | Games appear, but trainers will not start | Check enhancer version/build and Windows account path. Use the repair on the validated Wand version; retain the exact error if it continues. |
 | Recovery needed / unfinished operation | Close games and Wand. Keep backups, then retry or use **Restore**. |
 | Support files missing or wrong size | Restore complete original files. If backups are damaged, repair/reinstall official Wand in that Windows account. |
 | File replacement fails | Close the game or Wand that may hold the file open, then retry. Do not delete backups. |
+| Wand executable is still locked | Let any update finish, close Wand and games using its overlay, then retry with 2.1.4. Keep backups. A persistent lock needs investigation, not antivirus exclusions. |
 | Another operation may be running | Wait for it to finish; do not start another patch or restore. |
 | Phone cannot connect | Check current LAN address, network isolation and the local firewall rule. Run Wand in one Windows session. |
 | You want to undo changes | Close games and Wand, open the enhancer for the same installation and choose **Restore**. |
@@ -100,7 +105,7 @@ For troubleshooting, retain `launcher.log` and `launcher.prev.log` beside Wand's
 
 ## Build from source
 
-Check out **fix/trainer-launch-12-63** for this repair. Requirements: Windows, Node.js, pnpm, Visual Studio/Build Tools with MSBuild, and .NET Framework 4.8 desktop targeting tools.
+Check out **master** for the current repair. Requirements: Windows, Node.js, pnpm, Visual Studio/Build Tools with MSBuild, and .NET Framework 4.8 desktop targeting tools.
 
 ```powershell
 ./build.cmd
@@ -117,3 +122,5 @@ Custom renderer scripts run inside Wand with Node access. Add only scripts you u
 ## Credits
 
 Original project: [k1tbyte/Wand-Enhancer](https://github.com/k1tbyte/Wand-Enhancer). Trainer compatibility repair adapted from [RatedRCustomer's PR #345](https://github.com/k1tbyte/Wand-Enhancer/pull/345). Personal usability, recovery and phone tools are maintained in this fork. [Apache-2.0 license](LICENSE.md).
+
+Installation-scoped helper shutdown and exit waiting are adapted from the original project's [open PR #359](https://github.com/k1tbyte/Wand-Enhancer/pull/359), with additional updater protection, executable-lock preflight and regression tests.
