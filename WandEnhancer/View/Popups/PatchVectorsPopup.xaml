@@ -68,7 +68,9 @@
             <CheckBox Grid.Row="3" Grid.Column="1" x:Name="RemoteWebPanelPreviewBox" MinWidth="34" MinHeight="34" AutomationProperties.Name="{DynamicResource pv_remote_web_panel_preview}" HorizontalAlignment="Right" VerticalAlignment="Center" />
 
             <TextBlock Grid.Row="4" Grid.Column="0" VerticalAlignment="Center" Text="{DynamicResource pv_auto_apply}" />
-            <CheckBox Grid.Row="4" Grid.Column="1" x:Name="AutoApplyBox" MinWidth="34" MinHeight="34" AutomationProperties.Name="{DynamicResource pv_auto_apply}" HorizontalAlignment="Right" VerticalAlignment="Center" />
+            <CheckBox Grid.Row="4" Grid.Column="1" x:Name="AutoApplyBox" MinWidth="34" MinHeight="34" AutomationProperties.Name="{DynamicResource pv_auto_apply}"
+                      AutomationProperties.HelpText="{DynamicResource pv_auto_apply_description}" ToolTip="{DynamicResource pv_auto_apply_description}"
+                      HorizontalAlignment="Right" VerticalAlignment="Center" />
 
             <Border Grid.Row="5" Grid.ColumnSpan="2" Margin="0 14 0 0" Padding="10"
                     BorderBrush="{DynamicResource Border}" BorderThickness="1" CornerRadius="4"

@@ -3,6 +3,29 @@
 This file is the source of truth for release notes.
 The newest entry must match the version in `WandEnhancer/Properties/AssemblyInfo.cs`.
 
+## [2.1.5.0] - 2026-10-25
+
+### Upstream sync and personal improvements
+
+- Merge k1tbyte/master through `d6cbb7b`, retaining the personal desktop UI, phone panel, PWA, Phone Helper and recovery safeguards.
+- Include upstream's background auto-apply watcher and Bengali locale. Include the shared auxiliary-signature fix for Supervised mode from upstream PR #345.
+- Keep launcher interception separate from update watching. Static mode uses Wand's original launcher; Supervised mode keeps its interceptor. Auto-apply is optional, starts with the current Windows account and stops on Restore or reapplying with the option off.
+- Make the watcher wait while an updater is active, preserving this fork's refusal to interrupt installation. Stop watching before Restore changes files.
+- Explain the background/startup behavior in the auto-apply checkbox tooltip and screen-reader help.
+- Add a real watcher-process fixture that waits for an active installer, completes a synthetic Static patch, preserves backups and exits on a stop signal.
+- Rewrite the README with one tested-download path and separate instructions for the Gaming account and older setup kit.
+
+## [2.1.4.0] - 2026-10-25
+
+- Repair executable sharing violations using installation-scoped process shutdown, exit waiting, bounded retries and write-access preflight.
+- Protect active installers, other Windows profiles and original backups; add regression fixtures for these cases.
+- Verify patch/reapply and startup on Wand 12.66.0. Gameplay remains separately unverified.
+
+## [2.1.3.0] - 2026-10-15
+
+- Adapt upstream PR #345 for newer auxiliary archive and fuse checks, with structural validation and idempotence tests.
+- Verify Wand 12.63.0 startup and prepare the separately scoped Gaming-account setup wizard.
+
 ## [2.1.2.0] - 2026-10-09
 
 ### Phone installation

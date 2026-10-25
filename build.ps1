@@ -126,5 +126,9 @@ Invoke-Step 'Test process shutdown and executable file locks' {
     & (Join-Path $repoRoot 'scripts\test-file-locks.ps1') -AssemblyPath $assemblyPath
 }
 
+Invoke-Step 'Test update watcher with an active installer' {
+    & (Join-Path $repoRoot 'scripts\test-update-watcher.ps1') -AssemblyPath $assemblyPath
+}
+
 Write-Host ''
 Write-Host "Build completed successfully ($Configuration)." -ForegroundColor Green

@@ -176,16 +176,25 @@ namespace WandEnhancer.Core
                 PackSources();
                 _strategy.ApplyEnablement(new PatchContext(_weModConfig, _logger, _unpackedPath));
 
-                // Supervised needs its launcher at every start; static only to re-apply on update.
-                if (_strategy.RequiresLauncherAlways || _config.AutoApplyAfterUpdate)
+                // Launcher interception and update watching are independent.
+                if (_strategy.RequiresLauncherAlways)
                 {
                     LauncherDeployment.Deploy(_weModConfig, _logger);
-                    SaveAutoPatchConfig();
                 }
                 else
                 {
                     LauncherDeployment.Restore(_weModConfig);
+                }
+
+                if (_config.AutoApplyAfterUpdate)
+                {
+                    SaveAutoPatchConfig();
+                    Services.WatcherAutostart.EnsureRunning(_weModConfig, _logger);
+                }
+                else
+                {
                     DeleteAutoPatchConfig();
+                    Services.WatcherAutostart.Stop(_weModConfig);
                 }
 
                 File.Delete(markerPath);
@@ -423,6 +432,7 @@ namespace WandEnhancer.Core
                 throw new Exception("[ENHANCER] Backup is incomplete. Restore the original Wand installation files or reinstall Wand.");
             }
 
+            Services.WatcherAutostart.Stop(_weModConfig);
             ProcessTerminator.TryKillProcessesUnder(SquirrelRoot);
             if (File.Exists(_weModConfig.ExecutablePath + ".fusebak"))
                 DiskFusePatch.VerifyWritable(_weModConfig.ExecutablePath);

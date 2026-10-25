@@ -28,6 +28,29 @@ namespace WandEnhancer.Utils
             KillUntilGone("Wand installation helpers", () => Under(prefix, selfId));
         }
 
+        public static bool HasActiveUpdater(string directory)
+        {
+            string prefix = Path.GetFullPath(directory).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)
+                + Path.DirectorySeparatorChar;
+            var processes = Under(prefix, Process.GetCurrentProcess().Id);
+            try
+            {
+                foreach (var process in processes) if (IsUpdater(process)) return true;
+                return false;
+            }
+            finally { foreach (var process in processes) process.Dispose(); }
+        }
+
+        private static bool IsUpdater(Process process)
+        {
+            try
+            {
+                return !process.HasExited && (string.Equals(process.ProcessName, "Update", StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(process.ProcessName, "squirrel", StringComparison.OrdinalIgnoreCase));
+            }
+            catch (InvalidOperationException) { return false; }
+        }
+
         private static Process[] Under(string prefix, int selfId)
         {
             var result = new List<Process>();
@@ -60,8 +83,7 @@ namespace WandEnhancer.Utils
                     // Check the whole set before stopping anything.
                     foreach (var process in processes)
                     {
-                        if (string.Equals(process.ProcessName, "Update", StringComparison.OrdinalIgnoreCase) ||
-                            string.Equals(process.ProcessName, "squirrel", StringComparison.OrdinalIgnoreCase))
+                        if (IsUpdater(process))
                             throw new InvalidOperationException("Wand is updating (" + process.ProcessName + ", PID " + process.Id + "). Wait for the update to finish, then retry.");
                     }
                     foreach (var process in processes)
